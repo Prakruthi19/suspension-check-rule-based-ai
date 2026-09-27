@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from dueproc.calendar import SchoolCalendar
+from suspension_check.calendar import SchoolCalendar
 
 FIXTURES = Path(__file__).parent / "fixtures"
 EXAMPLES = Path(__file__).parent.parent / "examples"

@@ -1,4 +1,4 @@
-"""Command-line entry points: ``dueproc check`` and ``dueproc rules``."""
+"""Command-line entry points: ``suspension-check check`` and ``suspension-check rules``."""
 
 from __future__ import annotations
 
@@ -11,11 +11,11 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from dueproc import __version__
-from dueproc.calendar import SchoolCalendar
-from dueproc.facts import Facts
-from dueproc.report import DISCLAIMER, check
-from dueproc.rules import registry
+from suspension_check import __version__
+from suspension_check.calendar import SchoolCalendar
+from suspension_check.facts import Facts
+from suspension_check.report import DISCLAIMER, check
+from suspension_check.rules import registry
 
 _SEV_LABEL = {"assert": "ASSERT", "ask": "ASK", "information": "INFO"}
 
@@ -70,8 +70,10 @@ def _cmd_rules(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(prog="dueproc", description="School discipline due-process checks.")
-    p.add_argument("--version", action="version", version=f"dueproc {__version__}")
+    p = argparse.ArgumentParser(
+        prog="suspension-check", description="School discipline due-process checks."
+    )
+    p.add_argument("--version", action="version", version=f"suspension-check {__version__}")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     c = sub.add_parser("check", help="Evaluate a facts JSON file (use - for stdin).")

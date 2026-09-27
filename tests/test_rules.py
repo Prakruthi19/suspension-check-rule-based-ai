@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from dueproc.facts import Facts
-from dueproc.rules import Severity, all3, any3, evaluate, get_rule, is_no, registry, rule
+from suspension_check.facts import Facts
+from suspension_check.rules import Severity, all3, any3, evaluate, get_rule, is_no, registry, rule
 
 from .conftest import FIXTURES, load_json
 

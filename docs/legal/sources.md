@@ -1,6 +1,6 @@
 # Legal sources
 
-Every rule cites a URL from `src/dueproc/rules/sources.py`. This file records
+Every rule cites a URL from `src/suspension_check/rules/sources.py`. This file records
 where each URL points and what still needs checking. Agency sites move pages;
 re-check every link before the Gate 3 legal review.
 

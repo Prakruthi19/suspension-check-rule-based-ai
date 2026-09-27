@@ -2,9 +2,8 @@
 
 Dated log of scope, legal, and design decisions. Newest last.
 
-## 2026-09-14 · Library name: `dueproc`
-Kept the working name from the brief. It is short, available as a package name
-pattern, and says what it does. Use it everywhere (repo, PyPI, posts).
+## 2026-09-14 · Library name: `dueproc` (working name)
+Started with the brief's working name.
 
 ## 2026-09-15 · Python 3.11 minimum
 CI runs 3.11 and 3.12. 3.11 is what common hosting images ship today; nothing
@@ -65,3 +64,9 @@ description is hidden until redaction ships.
 ## 2026-09-27 · Letter spike: review request only, plain text
 One Appendix F letter with golden tests. DOCX, printable HTML, and the other
 three variants are Week 3 work.
+
+## 2026-09-27 · Renamed to `suspension-check-rule-based-ai`
+"dueproc" did not say what the project does. Repository and distribution:
+`suspension-check-rule-based-ai`; Python package: `suspension_check`; command:
+`suspension-check`. "Rule-based AI" is meant in the expert-system sense: every
+decision is an explicit, cited, tested rule, and no ML model or LLM is used.

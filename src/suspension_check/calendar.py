@@ -145,7 +145,11 @@ class SchoolCalendar:
     @classmethod
     def default(cls) -> SchoolCalendar:
         """The bundled CPS 2026-2027 calendar (provisional until verified)."""
-        text = resources.files("dueproc.data").joinpath("cps_2026_2027.json").read_text("utf-8")
+        text = (
+            resources.files("suspension_check.data")
+            .joinpath("cps_2026_2027.json")
+            .read_text("utf-8")
+        )
         return cls.from_dict(json.loads(text))
 
 

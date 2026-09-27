@@ -397,7 +397,7 @@ wheels = [
 ]
 
 [[package]]
-name = "dueproc"
+name = "suspension-check-rule-based-ai"
 version = "0.1.0a1"
 source = { editable = "." }
 dependencies = [

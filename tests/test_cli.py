@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from dueproc.cli import main
+from suspension_check.cli import main
 
 from .conftest import EXAMPLES
 

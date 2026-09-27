@@ -6,7 +6,7 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
-from dueproc.calendar import BeyondSchoolYear, SchoolCalendar
+from suspension_check.calendar import BeyondSchoolYear, SchoolCalendar
 
 CPS = SchoolCalendar.default()
 IN_YEAR = st.dates(min_value=CPS.first_day, max_value=CPS.last_day)

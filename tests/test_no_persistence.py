@@ -11,7 +11,10 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
-CHECKED = [*sorted((ROOT / "src" / "dueproc").rglob("*.py")), *sorted((ROOT / "app").rglob("*.py"))]
+CHECKED = [
+    *sorted((ROOT / "src" / "suspension_check").rglob("*.py")),
+    *sorted((ROOT / "app").rglob("*.py")),
+]
 
 STORAGE_MODULES = {
     "sqlite3",

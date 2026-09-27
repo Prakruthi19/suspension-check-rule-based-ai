@@ -1,4 +1,4 @@
-# dueproc · Suspension Check
+# Suspension Check: a rule-based AI for school discipline due process
 
 **Suspension Check** is a free web tool for Illinois families, Local School
 Councils, and parent groups. In **Family Check**, a parent answers a short
@@ -11,7 +11,10 @@ disparity summaries with small-cell suppression. Nothing a family types is
 stored, every flag comes from an explicit, unit-tested rule, and there is no
 chatbot anywhere in the decision path.
 
-**dueproc** is the open-source Python rules engine underneath it.
+The engine underneath it is an open-source Python library (`suspension_check`): a
+rule-based, explainable AI in the classic expert-system sense. Every conclusion
+traces to a written rule and a statute; there is no machine-learning model or LLM
+in the decision path.
 
 > Built with the Chicago Education Advocacy Cooperative (ChiEAC).
 > This is general information, not legal advice. Rule text is pending review by
@@ -27,7 +30,7 @@ chatbot anywhere in the decision path.
 | Facts models, rule registry, three-valued evaluation | Done |
 | School calendar (weekends, closures, JSON and .ics import) | Done. Bundled CPS 2026-27 calendar is **provisional** |
 | Timeline state machine (main track + IDEA track) | Done |
-| CLI: `dueproc check`, `dueproc rules` | Done |
+| CLI: `suspension-check check`, `suspension-check rules` | Done |
 | Tests: fixtures for every rule, Hypothesis property tests, letter goldens, no-persistence check | Done: 230 tests, 97% coverage |
 | Synthetic discipline logs with expected metrics | Done, `synthetic/` |
 | Review-request letter (plain text) | Early spike |
@@ -43,11 +46,12 @@ See [docs/STATUS.md](docs/STATUS.md) for what is next and the open questions.
 Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
-git clone <this repo> && cd dueproc
+git clone https://github.com/Prakruthi19/suspension-check-rule-based-ai.git
+cd suspension-check-rule-based-ai
 uv sync --all-extras
 uv run pytest                       # full suite with coverage gate
-uv run dueproc rules                # list every rule and its review status
-uv run dueproc check examples/scenario_b_iep_cumulative_twelve.json --today 2026-09-27
+uv run suspension-check rules                # list every rule and its review status
+uv run suspension-check check examples/scenario_b_iep_cumulative_twelve.json --today 2026-09-27
 ```
 
 Run the web demo:
@@ -74,9 +78,9 @@ uv run uvicorn app.api.main:app --reload
     citation="105 ILCS 5/10-22.6(b-20)",
     url=SOURCES["ILCS_10_22_6"],
     quote="...may be used only if other appropriate and available behavioral and "
-          "disciplinary interventions have been exhausted...",
+    "disciplinary interventions have been exhausted...",
     flag="A suspension longer than three school days ... requires the school to have tried "
-         "other interventions first and to say so in the written decision. Yours does not.",
+    "other interventions first and to say so in the written decision. Yours does not.",
     action="Ask in writing for the written decision to state which interventions were attempted...",
     severity=Severity.ASSERT,
 )

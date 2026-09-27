@@ -6,9 +6,9 @@ import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from dueproc.calendar import SchoolCalendar
-from dueproc.facts import Facts
-from dueproc.timeline import (
+from suspension_check.calendar import SchoolCalendar
+from suspension_check.facts import Facts
+from suspension_check.timeline import (
     IDEA_TRANSITIONS,
     MAIN_TRANSITIONS,
     IdeaState,
