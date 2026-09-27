@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suspension Check (alpha)</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 rx=%273%27 fill=%27%231f5f8b%27/%3E%3Cpath d=%27M4 8.5l2.5 2.5L12 5%27 stroke=%27white%27 stroke-width=%272%27 fill=%27none%27/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #f7f6f2; --panel: #ffffff; --ink: #1d232b; --muted: #5b6573; --line: #d9dce1;
+    --accent: #1f5f8b; --accent-ink: #ffffff;
+    --assert: #a4282b; --assert-bg: #fbeaea; --ask: #8a5a00; --ask-bg: #fdf3e0;
+    --info: #25606f; --info-bg: #e6f2f4; --focus: #f2b705;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171b; --panel: #1d2127; --ink: #e8eaed; --muted: #a0a8b3; --line: #343a42;
+      --accent: #6aaed8; --accent-ink: #0d1116;
+      --assert: #f08a8c; --assert-bg: #3a1f21; --ask: #f0c060; --ask-bg: #372c16;
+      --info: #7cc7d6; --info-bg: #17303a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header, main, footer { max-width: 920px; margin: 0 auto; padding: 0 16px; }
+  header { padding-top: 28px; }
+  h1 { margin: 0 0 4px; font-size: 1.7rem; }
+  .tag { display: inline-block; font-size: .75rem; font-weight: 600; letter-spacing: .03em;
+    padding: 2px 8px; border-radius: 999px; background: var(--ask-bg); color: var(--ask);
+    vertical-align: middle; margin-left: 8px; }
+  .lede { color: var(--muted); margin: 0 0 16px; max-width: 60ch; }
+  .banner { border: 1px solid var(--line); background: var(--panel); border-radius: 8px;
+    padding: 10px 14px; font-size: .92rem; color: var(--muted); }
+  .examples { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; align-items: center; }
+  .examples span { color: var(--muted); font-size: .9rem; }
+  button { font: inherit; cursor: pointer; border-radius: 6px; border: 1px solid var(--line);
+    background: var(--panel); color: var(--ink); padding: 6px 12px; }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent);
+    padding: 10px 20px; font-weight: 600; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  form { display: grid; gap: 16px; }
+  fieldset { border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
+    padding: 14px 16px 16px; margin: 0; }
+  legend { font-weight: 700; padding: 0 6px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 16px; }
+  label { display: block; font-size: .92rem; }
+  label > span { display: block; font-weight: 600; margin-bottom: 4px; }
+  input[type=date], input[type=number], select { width: 100%; font: inherit; padding: 6px 8px;
+    border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
+  .checks label { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; margin: 4px 0; }
+  .tri { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: center; }
+  .tri select { width: auto; }
+  .hint { color: var(--muted); font-size: .85rem; margin: 4px 0 0; }
+  [hidden] { display: none !important; }
+  #results { margin: 28px 0; display: grid; gap: 20px; }
+  #results > *, form > * { min-width: 0; }
+  a { color: var(--accent); overflow-wrap: anywhere; }
+  section.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+  section.card h2 { margin: 0 0 10px; font-size: 1.2rem; }
+  .summary { display: flex; gap: 12px; flex-wrap: wrap; }
+  .pill { border-radius: 6px; padding: 6px 10px; font-weight: 600; }
+  .sev-assert { background: var(--assert-bg); color: var(--assert); }
+  .sev-ask { background: var(--ask-bg); color: var(--ask); }
+  .sev-information { background: var(--info-bg); color: var(--info); }
+  table { width: 100%; border-collapse: collapse; font-size: .93rem; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  td.due { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .status { font-size: .8rem; color: var(--muted); display: block; }
+  .status.upcoming, .status.today { color: var(--ask); font-weight: 600; }
+  .table-wrap { overflow-x: auto; }
+  .flag { border-left: 4px solid var(--line); padding: 10px 12px; margin: 10px 0;
+    background: var(--bg); border-radius: 0 6px 6px 0; }
+  .flag.sev-assert { border-color: var(--assert); background: var(--bg); color: var(--ink); }
+  .flag.sev-ask { border-color: var(--ask); background: var(--bg); color: var(--ink); }
+  .flag.sev-information { border-color: var(--info); background: var(--bg); color: var(--ink); }
+  .flag-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: .82rem; }
+  .flag-head .sev { font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
+  .flag-head .rid { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); }
+  .pending { color: var(--muted); border: 1px dashed var(--line); border-radius: 4px; padding: 0 6px; }
+  .flag p { margin: 6px 0; }
+  .flag .action { font-weight: 600; }
+  details { font-size: .88rem; color: var(--muted); }
+  blockquote { margin: 6px 0; padding-left: 10px; border-left: 2px solid var(--line); }
+  pre.letter { white-space: pre-wrap; font: .93rem/1.55 Georgia, "Times New Roman", serif;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 16px; margin: 0; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  ul.resources { padding-left: 18px; margin: 0; }
+  footer { color: var(--muted); font-size: .85rem; padding-bottom: 40px; }
+  .error { color: var(--assert); font-weight: 600; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Suspension Check <span class="tag">ALPHA · SYNTHETIC DATA ONLY</span></h1>
+  <p class="lede">Answer a few questions about a school suspension in Illinois. See what the school
+    was required to do, what is due by when, and get a letter you can send.</p>
+  <p class="banner">Nothing you enter is saved. There is no account. Rules are pending legal review,
+    and this is not legal advice. The CPS calendar is provisional.</p>
+</header>
+
+<main>
+  <div class="examples" role="group" aria-label="Load a synthetic example">
+    <span>Load a synthetic example:</span>
+    <button type="button" data-example="a">Two-day suspension, no written notice</button>
+    <button type="button" data-example="b">IEP, 7 days, 12 days this year</button>
+    <button type="button" data-example="c">Expulsion hearing</button>
+  </div>
+
+  <form id="survey" novalidate>
+    <fieldset>
+      <legend>1. Your child</legend>
+      <div class="grid">
+        <label><span>School district</span>
+          <select name="district">
+            <option value="cps">Chicago Public Schools</option>
+            <option value="other_il">Another Illinois district</option>
+            <option value="unknown">Not sure</option>
+          </select></label>
+        <label><span>Grade</span>
+          <select name="grade_band">
+            <option value="prek_2">PreK to 2</option><option value="3_5">3 to 5</option>
+            <option value="6_8" selected>6 to 8</option><option value="9_12">9 to 12</option>
+          </select></label>
+      </div>
+      <div class="checks" role="group" aria-label="Disability status">
+        <label><input type="checkbox" name="iep"> My child has an IEP</label>
+        <label><input type="checkbox" name="plan_504"> My child has a 504 plan</label>
+        <label><input type="checkbox" name="being_evaluated"> The school is evaluating my child now</label>
+        <label><input type="checkbox" name="evaluation_requested_in_writing"> I asked in writing for an evaluation before this happened</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>2. What the school did</legend>
+      <div class="grid">
+        <label><span>What did the school do?</span>
+          <select name="kind">
+            <option value="oss">Out-of-school suspension</option>
+            <option value="iss">In-school suspension</option>
+            <option value="expulsion">Recommended expulsion</option>
+            <option value="alternative">Moved to an alternative school</option>
+            <option value="bus">Bus suspension</option>
+            <option value="informal">Sent home without paperwork</option>
+          </select></label>
+        <label><span>Date of the incident</span><input type="date" name="incident_date" required></label>
+        <label><span>Date of the school's decision</span><input type="date" name="decision_date" required></label>
+        <label><span>First day out</span><input type="date" name="start_date" required></label>
+        <label><span>How many school days?</span><input type="number" name="school_days" min="0" max="400" value="2" required></label>
+        <label><span>School days already removed this year</span>
+          <input type="number" name="prior_days" min="0" max="200" placeholder="Leave blank if not sure">
+          <p class="hint">Count days you were asked to pick your child up early.</p></label>
+      </div>
+      <div class="checks">
+        <label><input type="checkbox" name="informal_removals_reported"> I have been asked to pick my child up early or keep them home before</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>3. What paper you received</legend>
+      <label><span>Did you receive anything in writing?</span>
+        <select name="received">
+          <option value="written">Yes, a paper or email notice</option>
+          <option value="phone_only">Only a phone call</option>
+          <option value="nothing">Nothing</option>
+        </select></label>
+      <div id="notice-items" class="tri" style="margin-top:12px">
+        <!-- filled by script -->
+      </div>
+    </fieldset>
+
+    <fieldset id="expulsion-set" hidden>
+      <legend>4. Expulsion</legend>
+      <div class="grid">
+        <label><span>Did you get a certified or registered letter asking you to a hearing?</span>
+          <select name="hearing_request_by_certified_mail">
+            <option value="unknown">Not sure</option><option value="yes">Yes</option><option value="no">No</option>
+          </select></label>
+        <label><span>Hearing date</span><input type="date" name="hearing_date"></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>5. What you have already done</legend>
+      <div class="grid">
+        <label><span>Asked for a review on</span><input type="date" name="review_requested_on"></label>
+        <label><span>Asked for records on</span><input type="date" name="records_requested_on"></label>
+      </div>
+    </fieldset>
+
+    <div><button class="primary" type="submit">Check my situation</button>
+      <span id="form-error" class="error" role="alert"></span></div>
+  </form>
+
+  <div id="results" aria-live="polite"></div>
+</main>
+
+<footer>
+  <p>Suspension Check is an open-source project of the Chicago Education Advocacy Cooperative.
+    Every flag comes from an explicit, tested rule with a citation. There is no chatbot.</p>
+</footer>
+
+<script>
+const NOTICE_ITEMS = [
+  ["states_reasons", "States the reasons for the suspension"],
+  ["states_specific_act", "States the specific thing your child is accused of doing"],
+  ["states_rationale_for_length", "Explains why the suspension is this long"],
+  ["documents_interventions", "Says what other steps were tried first"],
+  ["states_threat_or_disruption", "Says your child's presence was a safety threat or a disruption"],
+  ["states_review_right", "Tells you about your right to a review"],
+  ["support_services_determination", "Says what support services your child will get"],
+  ["mentions_makeup_work", "Says your child can make up missed work"],
+  ["procedural_safeguards_notice", "Includes a procedural safeguards notice (IEP)", true],
+  ["mdr_invitation", "Invites you to a manifestation determination meeting (IEP)", true],
+  ["cites_zero_tolerance", "Says a policy required the suspension (zero tolerance)"],
+];
+
+const EXAMPLES = {
+  a: { district: "cps", grade_band: "6_8", kind: "oss", incident_date: "2026-09-21", decision_date: "2026-09-21",
+       start_date: "2026-09-22", school_days: 2, prior_days: "0", received: "phone_only" },
+  b: { district: "cps", grade_band: "3_5", iep: true, kind: "oss", incident_date: "2026-09-21",
+       decision_date: "2026-09-22", start_date: "2026-09-23", school_days: 7, prior_days: "5",
+       informal_removals_reported: true, received: "written",
+       notice: { states_reasons: "yes", states_specific_act: "yes", states_rationale_for_length: "no",
+         documents_interventions: "no", states_threat_or_disruption: "yes", states_review_right: "yes",
+         support_services_determination: "no", mentions_makeup_work: "unknown",
+         procedural_safeguards_notice: "no", mdr_invitation: "no", cites_zero_tolerance: "no" } },
+  c: { district: "cps", grade_band: "9_12", kind: "expulsion", incident_date: "2026-09-16",
+       decision_date: "2026-09-18", start_date: "2026-09-21", school_days: 10, prior_days: "0",
+       received: "written", hearing_request_by_certified_mail: "yes", hearing_date: "2026-10-02",
+       notice: { states_reasons: "yes", states_specific_act: "yes", states_rationale_for_length: "no",
+         documents_interventions: "no", states_threat_or_disruption: "yes", states_review_right: "yes" } },
+};
+const DEMO_AS_OF = "2026-09-27";
+
+const form = document.getElementById("survey");
+const noticeBox = document.getElementById("notice-items");
+const results = document.getElementById("results");
+
+for (const [name, text, iepOnly] of NOTICE_ITEMS) {
+  const id = "n_" + name;
+  const lab = document.createElement("label");
+  lab.htmlFor = id; lab.textContent = text; if (iepOnly) lab.dataset.iep = "1";
+  const sel = document.createElement("select");
+  sel.id = id; sel.name = "notice." + name; if (iepOnly) sel.dataset.iep = "1";
+  for (const [v, t] of [["unknown", "Not sure"], ["yes", "Yes"], ["no", "No"]]) {
+    const o = document.createElement("option"); o.value = v; o.textContent = t; sel.append(o);
+  }
+  noticeBox.append(lab, sel);
+}
+
+function syncVisibility() {
+  const written = form.received.value === "written";
+  noticeBox.hidden = !written;
+  const idea = form.iep.checked || form.being_evaluated.checked || form.evaluation_requested_in_writing.checked;
+  noticeBox.querySelectorAll("[data-iep]").forEach(el => el.hidden = !idea);
+  document.getElementById("expulsion-set").hidden = form.kind.value !== "expulsion";
+}
+form.addEventListener("change", syncVisibility);
+
+let asOf = null;
+document.querySelectorAll("[data-example]").forEach(btn => btn.addEventListener("click", () => {
+  form.reset();
+  const ex = EXAMPLES[btn.dataset.example];
+  for (const [k, v] of Object.entries(ex)) {
+    if (k === "notice") continue;
+    const el = form.elements[k];
+    if (!el) continue;
+    if (el.type === "checkbox") el.checked = !!v; else el.value = v;
+  }
+  for (const [k, v] of Object.entries(ex.notice || {})) form.elements["notice." + k].value = v;
+  asOf = DEMO_AS_OF;
+  syncVisibility();
+  form.requestSubmit();
+}));
+form.addEventListener("input", () => { asOf = null; });
+
+function toFacts() {
+  const f = form.elements, v = n => f[n].value || null;
+  const notice = { received: f.received.value };
+  if (notice.received === "written")
+    for (const [name] of NOTICE_ITEMS) notice[name] = f["notice." + name].value;
+  const facts = {
+    student: { district: v("district"), grade_band: v("grade_band"),
+      disability: { iep: f.iep.checked, plan_504: f.plan_504.checked, being_evaluated: f.being_evaluated.checked,
+        evaluation_requested_in_writing: f.evaluation_requested_in_writing.checked } },
+    incident_date: v("incident_date"),
+    removal: { kind: v("kind"), decision_date: v("decision_date"), start_date: v("start_date"),
+      school_days: Number(f.school_days.value || 0) },
+    notice,
+    prior: { school_days_this_year: f.prior_days.value === "" ? null : Number(f.prior_days.value),
+      informal_removals_reported: f.informal_removals_reported.checked },
+    actions: { review_requested_on: v("review_requested_on"), records_requested_on: v("records_requested_on") },
+  };
+  if (facts.removal.kind === "expulsion")
+    facts.expulsion = { hearing_request_by_certified_mail: v("hearing_request_by_certified_mail"),
+      hearing_date: v("hearing_date") };
+  return facts;
+}
+
+const el = (tag, attrs = {}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) k === "class" ? n.className = v : n.setAttribute(k, v);
+  for (const k of kids) n.append(k);
+  return n;
+};
+const SEV = { assert: "Assert: the school appears to have missed this", ask: "Ask: request this in writing",
+  information: "Know this" };
+const fmt = iso => iso ? new Date(iso + "T12:00:00").toLocaleDateString("en-US",
+  { weekday: "short", month: "short", day: "numeric", year: "numeric" }) : "No date";
+
+function render(r) {
+  results.replaceChildren();
+  const counts = { assert: 0, ask: 0, information: 0 };
+  r.flags.forEach(f => counts[f.severity]++);
+  results.append(el("section", { class: "card" },
+    el("h2", { tabindex: "-1", id: "results-head" }, "What we found"),
+    el("div", { class: "summary" },
+      el("span", { class: "pill sev-assert" }, `${counts.assert} possible violations`),
+      el("span", { class: "pill sev-ask" }, `${counts.ask} things to ask for`),
+      el("span", { class: "pill sev-information" }, `${counts.information} things to know`)),
+    el("p", { class: "hint" }, `Dates use the ${r.calendar.name} calendar.` + (asOf ? ` Shown as of ${fmt(asOf)}.` : ""))));
+
+  const tbody = el("tbody");
+  for (const o of r.timeline) {
+    const clock = o.length ? `${o.length} ${o.length === 1 ? o.unit.replace(/s$/, "") : o.unit}` : o.unit;
+    tbody.append(el("tr", {},
+      el("td", { class: "due" }, fmt(o.due), el("span", { class: "status " + o.status }, o.status)),
+      el("td", {}, o.title, o.note ? el("span", { class: "status" }, o.note) : ""),
+      el("td", {}, clock),
+      el("td", {}, o.authority)));
+  }
+  if (r.records_due_if_requested_today)
+    tbody.append(el("tr", {}, el("td", { class: "due" }, fmt(r.records_due_if_requested_today),
+      el("span", { class: "status" }, "if you ask today")), el("td", {}, "Records due if you request them today"),
+      el("td", {}, "15 school days"), el("td", {}, "105 ILCS 10/5 (ISSRA)")));
+  results.append(el("section", { class: "card" }, el("h2", {}, "Timeline"),
+    el("div", { class: "table-wrap" }, el("table", {},
+      el("thead", {}, el("tr", {}, el("th", {}, "When"), el("th", {}, "What"), el("th", {}, "Clock"),
+        el("th", {}, "Law"))), tbody))));
+
+  const flags = el("section", { class: "card" }, el("h2", {}, "Flags"));
+  for (const f of r.flags) {
+    const cite = el("a", { href: f.url, target: "_blank", rel: "noopener" }, f.citation);
+    flags.append(el("article", { class: "flag sev-" + f.severity },
+      el("div", { class: "flag-head" }, el("span", { class: "sev" }, SEV[f.severity]),
+        el("span", { class: "rid" }, f.rule_id), cite,
+        f.reviewed ? "" : el("span", { class: "pending" }, "pending legal review")),
+      el("p", {}, f.flag),
+      f.uncertain ? el("p", { class: "hint" }, "You answered “Not sure” to a question this depends on, so this is shown as something to ask about.") : "",
+      el("p", { class: "action" }, f.action),
+      el("details", {}, el("summary", {}, "What the law says"), el("blockquote", {}, "“" + f.quote + "”"))));
+  }
+  results.append(flags);
+
+  const copy = el("button", { type: "button" }, "Copy letter");
+  copy.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(r.letter); copy.textContent = "Copied"; }
+    catch { copy.textContent = "Select the text to copy"; }
+  });
+  const dl = el("button", { type: "button" }, "Download .txt");
+  dl.addEventListener("click", () => {
+    const a = el("a", { href: URL.createObjectURL(new Blob([r.letter], { type: "text/plain" })),
+      download: "suspension-review-request.txt" });
+    a.click(); URL.revokeObjectURL(a.href);
+  });
+  results.append(el("section", { class: "card" }, el("h2", {}, "Your letter: request for review"),
+    el("p", { class: "hint" }, "Fill in the parts in [brackets] before you send it. Keep a copy."),
+    el("div", { class: "row" }, copy, dl), el("pre", { class: "letter" }, r.letter)));
+
+  const list = el("ul", { class: "resources" });
+  for (const x of r.resources)
+    list.append(el("li", {}, el("a", { href: x.url, target: "_blank", rel: "noopener" }, x.name), ": " + x.for));
+  results.append(el("section", { class: "card" }, el("h2", {}, "Who to call next"), list,
+    el("p", { class: "hint" }, r.disclaimer)));
+  document.getElementById("results-head").focus();
+}
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  const err = document.getElementById("form-error");
+  err.textContent = "";
+  if (!form.incident_date.value || !form.decision_date.value || !form.start_date.value) {
+    err.textContent = "Please fill in the three dates."; return;
+  }
+  const qs = asOf ? "?as_of=" + asOf : "";
+  const res = await fetch("/api/check" + qs, { method: "POST", headers: { "content-type": "application/json" },
+    body: JSON.stringify(toFacts()) });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    err.textContent = body.detail?.invalid_fields ? "Please check: " + body.detail.invalid_fields.join(", ")
+      : (body.error || "Something went wrong.");
+    return;
+  }
+  render(await res.json());
+});
+syncVisibility();
+</script>
+</body>
+</html>
