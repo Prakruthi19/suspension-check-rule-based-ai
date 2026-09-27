@@ -1,0 +1,21 @@
+{
+  "student": {"district": "cps", "grade_band": "9_12"},
+  "incident_date": "2026-09-16",
+  "removal": {"kind": "expulsion", "decision_date": "2026-09-18", "start_date": "2026-09-21", "school_days": 10},
+  "notice": {
+    "received": "written",
+    "states_reasons": "yes",
+    "states_specific_act": "yes",
+    "states_rationale_for_length": "no",
+    "documents_interventions": "no",
+    "states_threat_or_disruption": "yes",
+    "states_review_right": "yes",
+    "cites_zero_tolerance": "unknown"
+  },
+  "expulsion": {
+    "hearing_request_by_certified_mail": "yes",
+    "hearing_date": "2026-10-02",
+    "decision_issued": false
+  },
+  "prior": {"school_days_this_year": 0}
+}

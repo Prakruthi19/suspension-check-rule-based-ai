@@ -1,0 +1,44 @@
+{
+  "rule": "FED-08",
+  "expect": "silent",
+  "description": "Reevaluation done.",
+  "facts": {
+    "student": {
+      "district": "cps",
+      "grade_band": "6_8",
+      "disability": {
+        "plan_504": true
+      }
+    },
+    "incident_date": "2026-09-21",
+    "removal": {
+      "kind": "oss",
+      "decision_date": "2026-09-21",
+      "start_date": "2026-09-22",
+      "school_days": 2
+    },
+    "notice": {
+      "received": "written",
+      "states_reasons": "yes",
+      "states_specific_act": "yes",
+      "states_rationale_for_length": "yes",
+      "documents_interventions": "yes",
+      "states_threat_or_disruption": "yes",
+      "states_review_right": "yes",
+      "support_services_determination": "yes",
+      "mentions_makeup_work": "yes",
+      "procedural_safeguards_notice": "yes",
+      "mdr_invitation": "yes",
+      "cites_zero_tolerance": "no"
+    },
+    "prior": {
+      "school_days_this_year": 10
+    },
+    "actions": {
+      "records_requested_on": "2026-09-22"
+    },
+    "idea": {
+      "reevaluation_504_done": "yes"
+    }
+  }
+}
