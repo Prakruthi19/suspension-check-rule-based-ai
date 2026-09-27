@@ -1,0 +1,49 @@
+{{ today }}
+
+[Principal name], Principal, [School name]
+cc: [Network Chief or Superintendent]; [Board of Education, Secretary]
+
+Re: Request for review of the {{ kind }} of [Student first name], grade [X], issued {{ decision_date }}
+
+Dear [Principal name]:
+
+I am the parent or guardian of [Student first name]. I am writing to request a review of the {{ days }}-school-day {{ kind }} issued on {{ decision_date }}, as provided under 105 ILCS 5/10-22.6(b), and to request the complete written suspension decision.
+{% if notice_defects %}
+
+{% if written_notice %}The notice I received does not include {{ missing | join_or }}.{% else %}I have not received any written notice of this suspension, so I have not been told {{ missing | join_or }}.{% endif %} Each of these must appear in the written decision under 105 ILCS 5/10-22.6(b){% if 'IL-05' in fired %} and (b-20){% endif %}. Please provide a complete written decision that includes them.
+{% endif %}
+{% if threat_finding %}
+
+Please also state in writing whether the school found that [Student first name]'s continuing presence in school posed a threat to safety or a disruption, as 105 ILCS 5/10-22.6 requires before an out-of-school suspension, and the facts that finding rests on.
+{% endif %}
+{% if idea %}
+
+Because [Student first name] has an IEP{% if cumulative is not none %} and this removal brings the total days removed this school year to {{ cumulative }}{% endif %}, I request a manifestation determination review within ten school days of the removal decision, as required by 34 CFR 300.530(e), together with the procedural safeguards notice required by 34 CFR 300.530(h). Please share all records the team will rely on before the meeting.
+{% endif %}
+{% if basis_of_knowledge %}
+
+Before this incident I asked in writing for [Student first name] to be evaluated for special education, or raised a concern in writing. Under 34 CFR 300.534 the IDEA discipline protections apply. I request an expedited evaluation.
+{% endif %}
+{% if section_504 %}
+
+[Student first name] has a Section 504 plan. Removal for more than ten school days is a significant change in placement, and 34 CFR 104.35 requires a reevaluation before it. Please schedule that reevaluation before any further removal.
+{% endif %}
+{% if records %}
+
+I also request copies of [Student first name]'s school student records related to this incident, including the referral, any statements, and any record of interventions, under the Illinois School Student Records Act (105 ILCS 10/5).
+{% endif %}
+{% if support_services or makeup_work %}
+
+Please confirm in writing {% if support_services %}what support services will be provided during the suspension, as required for suspensions longer than four school days under 105 ILCS 5/10-22.6(b-25){% endif %}{% if support_services and makeup_work %}, and {% endif %}{% if makeup_work %}that [Student first name] will be permitted to make up all missed work for equivalent academic credit under 105 ILCS 5/10-22.6(b-30){% endif %}.
+{% endif %}
+
+Please confirm the date of the review and send the requested documents to me at the address or email below.
+
+Sincerely,
+
+[Parent or guardian name]
+[Phone] | [Email] | [Mailing address]
+
+{% if written_notice %}
+Enclosure: copy of the notice received on [date]
+{% endif %}
