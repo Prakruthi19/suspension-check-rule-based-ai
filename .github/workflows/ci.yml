@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv python install ${{ matrix.python-version }}
+      - run: uv sync --all-extras --python ${{ matrix.python-version }}
+      - name: Lint
+        run: uv run ruff check . && uv run ruff format --check .
+      - name: Tests with coverage gate (90%)
+        run: uv run pytest --cov --cov-report=term-missing
+      - name: Gate 2 scenarios through the CLI
+        run: |
+          for f in examples/scenario_*.json; do uv run dueproc check "$f" --today 2026-09-27 > /dev/null; done
+      - name: Dependency audit
+        run: uv run pip-audit --skip-editable
