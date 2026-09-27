@@ -1,0 +1,50 @@
+{
+  "log": "school_c_small",
+  "synthetic": true,
+  "suppression_threshold": 10,
+  "oss_incidents": 14,
+  "iss_rows_ignored": 9,
+  "by_race_ethnicity": {
+    "Black": {
+      "enrolled": 45,
+      "students_suspended": "<10",
+      "students_suspended_per_100": null,
+      "days_lost_per_100": null,
+      "composition_index": null,
+      "documented_intervention_share": null,
+      "subjective_share": 0.5,
+      "repeat_share": null,
+      "risk_ratio": null,
+      "risk_ratio_reference": "all other students"
+    },
+    "Hispanic": {
+      "enrolled": 30,
+      "students_suspended": "<10",
+      "students_suspended_per_100": null,
+      "days_lost_per_100": null,
+      "composition_index": null,
+      "documented_intervention_share": null,
+      "subjective_share": null,
+      "repeat_share": null,
+      "risk_ratio": null,
+      "risk_ratio_reference": "all other students"
+    },
+    "White": {
+      "enrolled": "<10",
+      "students_suspended": "<10",
+      "students_suspended_per_100": null,
+      "days_lost_per_100": null,
+      "composition_index": null,
+      "documented_intervention_share": null,
+      "subjective_share": null,
+      "repeat_share": null,
+      "risk_ratio": null,
+      "risk_ratio_reference": "all other students"
+    }
+  },
+  "enrollment": {
+    "Black": 45,
+    "Hispanic": 30,
+    "White": 8
+  }
+}

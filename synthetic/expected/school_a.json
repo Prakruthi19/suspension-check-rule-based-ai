@@ -1,0 +1,76 @@
+{
+  "log": "school_a",
+  "synthetic": true,
+  "suppression_threshold": 10,
+  "oss_incidents": 76,
+  "iss_rows_ignored": 15,
+  "by_race_ethnicity": {
+    "Black": {
+      "enrolled": 240,
+      "students_suspended": 40,
+      "students_suspended_per_100": 16.67,
+      "days_lost_per_100": 104.17,
+      "composition_index": 1.645,
+      "documented_intervention_share": 0.3,
+      "subjective_share": 0.7,
+      "repeat_share": 0.25,
+      "risk_ratio": 2.728,
+      "risk_ratio_reference": "all other students"
+    },
+    "Hispanic": {
+      "enrolled": 200,
+      "students_suspended": 15,
+      "students_suspended_per_100": 7.5,
+      "days_lost_per_100": 27.0,
+      "composition_index": 0.711,
+      "documented_intervention_share": null,
+      "subjective_share": 0.5,
+      "repeat_share": 0.2,
+      "risk_ratio": 0.638,
+      "risk_ratio_reference": "all other students"
+    },
+    "White": {
+      "enrolled": 120,
+      "students_suspended": "<10",
+      "students_suspended_per_100": null,
+      "days_lost_per_100": null,
+      "composition_index": null,
+      "documented_intervention_share": null,
+      "subjective_share": null,
+      "repeat_share": null,
+      "risk_ratio": null,
+      "risk_ratio_reference": "all other students"
+    },
+    "Asian": {
+      "enrolled": 30,
+      "students_suspended": "<10",
+      "students_suspended_per_100": null,
+      "days_lost_per_100": null,
+      "composition_index": null,
+      "documented_intervention_share": null,
+      "subjective_share": null,
+      "repeat_share": null,
+      "risk_ratio": null,
+      "risk_ratio_reference": "all other students"
+    },
+    "Two or More Races": {
+      "enrolled": 10,
+      "students_suspended": "<10",
+      "students_suspended_per_100": null,
+      "days_lost_per_100": null,
+      "composition_index": null,
+      "documented_intervention_share": null,
+      "subjective_share": null,
+      "repeat_share": null,
+      "risk_ratio": null,
+      "risk_ratio_reference": "all other students"
+    }
+  },
+  "enrollment": {
+    "Black": 240,
+    "Hispanic": 200,
+    "White": 120,
+    "Asian": 30,
+    "Two or More Races": 10
+  }
+}

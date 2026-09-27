@@ -1,0 +1,92 @@
+Student Name,Student ID,Incident Date,Consequence,Days,Gr,Infraction,Race/Ethnicity,Alternatives Tried
+"Smith, Steven",41567137,2026-03-06,OSS,5,4,Disruption,Black,No
+"Davis, Denise",99714011,11/20/2025,OSS,3,4,Disrespect,Hispanic,
+"Jimenez, Nancy",17609996,2025-09-02,OSS,5,4,Insubordination,Black,No
+"Roberts, Heather",99244777,2025-12-25,OSS,5,3,Insubordination,Black,Yes
+"Khan, Ralph",11657376,2026-04-20,OSS,5,5,Weapon possession,Black,No
+"Lewis, Jeffrey",27951833,2025-11-29,OSS,5,5,Disrespect,Black,Yes
+"Davis, Sharon",20792253,2026-02-07,OSS,3,6,Defiance,Hispanic,
+"Martinez, Matthew",56517169,04/14/2026,ISS,1,8,Disruption,Hispanic,
+"Richardson, Thomas",99561915,09/17/2025,OSS,5,5,Fighting,Black,No
+"Lewis, Teresa",94075516,11/22/2025,OSS,5,7,Disruption,Black,Yes
+"Morgan, Carlos",34918593,01/03/2026,ISS,1,4,Insubordination,Black,
+"Graham, Spencer",36783465,04/17/2026,ISS,1,3,Fighting,White,
+"Richardson, Thomas",99561915,03/18/2026,OSS,5,5,Disrespect,Black,No
+"Thornton, Kim",62156332,02/08/2026,OSS,5,3,Disruption,Black,No
+"Sullivan, Elizabeth",17997398,11/14/2025,OSS,5,3,Disrespect,Black,No
+"Navarro, John",21535089,04/17/2026,ISS,1,3,Fighting,White,
+"Chandler, Michael",17453593,02/20/2026,OSS,5,6,Disruption,Black,No
+"Williams, Victoria",97417428,2026-04-03,ISS,1,3,Weapon possession,Asian,
+"Mejia, Steven",74910537,2025-12-18,ISS,1,4,Drug possession,Two or More Races,
+"Davis, Sharon",20792253,04/20/2026,OSS,3,6,Insubordination,Hispanic,
+"Johnson, Janet",42417334,11/03/2025,OSS,5,6,Drug possession,Black,No
+"Terrell, Sandra",21393397,2025-12-18,ISS,1,4,Drug possession,Two or More Races,
+"Sanford, Sandra",80382435,11/03/2025,OSS,5,5,Vandalism,Black,Yes
+"Collins, Molly",23992271,10/19/2025,OSS,5,8,Defiance,Black,No
+"Ramirez, Makayla",11489547,2025-09-29,OSS,3,6,Insubordination,Hispanic,
+"Page, Stephanie",99902264,2025-12-18,OSS,1,4,Drug possession,Two or More Races,
+"Davis, Kayla",16928947,01/21/2026,OSS,5,5,Drug possession,Black,Yes
+"Phillips, Billy",47345745,2026-04-03,OSS,2,3,Weapon possession,Asian,
+"Singh, Samuel",17484627,2026-04-03,ISS,1,3,Weapon possession,Asian,
+"Perkins, James",35838954,11/05/2025,OSS,5,5,Disrespect,Black,Yes
+"Stafford, Sean",31247794,10/04/2025,OSS,5,7,Disruption,Black,No
+"Nguyen, Dana",26264863,2025-09-24,OSS,5,8,Vandalism,Black,No
+"Wood, Seth",55955761,2025-12-13,OSS,2,3,Drug possession,White,
+"Shah, Nancy",48389491,02/09/2026,OSS,5,6,Theft,Black,No
+"Mcdonald, Elizabeth",98038785,09/13/2025,OSS,5,7,Disruption,Black,Yes
+"Flores, Erica",31121586,04/17/2026,ISS,1,3,Fighting,White,
+"Santana, Luis",41041537,10/16/2025,OSS,3,5,Fighting,Hispanic,
+"Schultz, Melissa",19700653,11/29/2025,OSS,3,5,Fighting,Hispanic,
+"Delgado, Thomas",12824550,01/03/2026,OSS,5,5,Disruption,Black,No
+"Hernandez, Austin",35616877,03/20/2026,OSS,5,5,Disrespect,Black,No
+"Krueger, Nicole",91341478,01/03/2026,OSS,5,4,Insubordination,Black,No
+"Lamb, Laura",70906021,03/29/2026,OSS,5,5,Defiance,Black,No
+"Smith, Christopher",79301262,2026-01-04,OSS,5,8,Insubordination,Black,No
+"Rodriguez, Tina",61803590,2026-03-04,OSS,3,5,Defiance,Hispanic,
+"Nelson, Donna",23771713,10/08/2025,OSS,3,8,Drug possession,Hispanic,
+"Clay, Alexander",99686195,2025-12-01,OSS,3,6,Drug possession,Hispanic,
+"Lewis, Jeffrey",27951833,09/15/2025,OSS,5,5,Drug possession,Black,Yes
+"Mcdonald, Elizabeth",98038785,02/18/2026,OSS,5,7,Fighting,Black,Yes
+"Smith, Anne",32044357,2025-12-23,OSS,5,6,Drug possession,Black,No
+"Roberts, Erika",51412798,04/01/2026,OSS,3,5,Theft,Hispanic,
+"Jordan, Kevin",81356698,2025-10-31,OSS,5,3,Defiance,Black,No
+"Jones, Eddie",30417955,04/14/2026,ISS,1,8,Disruption,Hispanic,
+"Mcdaniel, Michael",30703385,2025-10-29,OSS,2,3,Drug possession,White,
+"Roberts, Heather",99244777,10/09/2025,OSS,5,3,Disrespect,Black,Yes
+"Perkins, James",35838954,2026-02-22,OSS,5,5,Defiance,Black,Yes
+"Taylor, Harold",84456620,2026-04-11,OSS,5,4,Insubordination,Black,No
+"Vazquez, Frances",38789796,02/01/2026,OSS,5,8,Theft,Black,No
+"Johnson, Michael",16275270,01/15/2026,OSS,5,3,Defiance,Black,No
+"Sparks, Joanna",17314928,03/10/2026,OSS,5,5,Insubordination,Black,No
+"Dunn, Hannah",31281352,01/03/2026,ISS,1,4,Insubordination,Black,
+"Brown, Jeffrey",46690325,04/14/2026,ISS,1,8,Disruption,Hispanic,
+"Hernandez, Gail",98881224,2026-02-13,OSS,5,8,Insubordination,Black,No
+"Anderson, Amy",72180628,04/17/2026,OSS,2,3,Fighting,White,
+"Nichols, Michael",95040022,02/27/2026,OSS,5,5,Disrespect,Black,No
+"Gray, Rodney",24829153,12/25/2025,OSS,5,3,Insubordination,Black,No
+"Ortega, Erica",44790339,01/20/2026,OSS,2,5,Defiance,White,
+"Wright, James",92592570,02/06/2026,OSS,3,5,Disrespect,Hispanic,
+"Jones, James",42309214,09/14/2025,OSS,5,6,Disrespect,Black,Yes
+"Frazier, Elizabeth",35404722,05/01/2026,OSS,5,7,Insubordination,Black,No
+"Davis, Kayla",16928947,2026-04-26,OSS,5,5,Disruption,Black,No
+"Wood, Seth",55955761,03/07/2026,OSS,2,3,Disrespect,White,
+"Shannon, Richard",19995323,04/14/2026,OSS,3,8,Disruption,Hispanic,
+"Estrada, Joseph",64415135,2026-04-03,ISS,1,3,Weapon possession,Asian,
+"White, Cameron",45437665,03/14/2026,OSS,5,3,Drug possession,Black,No
+"Powell, Jared",24583626,09/03/2025,OSS,5,5,Insubordination,Black,No
+"Wright, James",92592570,04/10/2026,OSS,3,5,Vandalism,Hispanic,
+"Cook, Sharon",29534883,2026-02-20,OSS,3,6,Disruption,Hispanic,
+"Brown, Robert",62347338,2025-12-18,ISS,1,4,Drug possession,Two or More Races,
+"Bell, Brian",76983315,01/03/2026,ISS,1,4,Insubordination,Black,
+"Sanford, Sandra",80382435,2025-09-05,OSS,5,5,Vandalism,Black,Yes
+"Brock, John",82023834,2026-04-21,OSS,3,4,Defiance,Hispanic,
+"Jones, James",42309214,2025-10-24,OSS,5,6,Insubordination,Black,Yes
+"Lewis, Teresa",94075516,10/25/2025,OSS,5,7,Theft,Black,Yes
+"Ellis, Ashley",72850910,11/17/2025,OSS,3,6,Fighting,Hispanic,
+"Roberson, David",74419214,2026-03-18,OSS,5,4,Disrespect,Black,No
+"Bates, Andrea",79892056,04/23/2026,OSS,2,4,Weapon possession,White,
+"Tran, Amanda",65659765,11/21/2025,OSS,3,8,Fighting,Hispanic,
+"Preston, Donald",21717913,2025-10-07,OSS,5,4,Vandalism,Black,No
+"Rodriguez, Madeline",88830608,03/10/2026,OSS,5,8,Disrespect,Black,No
+"Ramirez, Makayla",11489547,12/25/2025,OSS,3,6,Theft,Hispanic,
+"Nguyen, Dana",26264863,09/20/2025,OSS,5,8,Disruption,Black,No

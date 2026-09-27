@@ -1,0 +1,63 @@
+{
+  "log": "school_b",
+  "synthetic": true,
+  "suppression_threshold": 10,
+  "oss_incidents": 133,
+  "iss_rows_ignored": 12,
+  "by_race_ethnicity": {
+    "Black": {
+      "enrolled": 400,
+      "students_suspended": 60,
+      "students_suspended_per_100": 15.0,
+      "days_lost_per_100": 75.0,
+      "composition_index": 1.776,
+      "documented_intervention_share": 0.4,
+      "subjective_share": 0.6,
+      "repeat_share": 0.25,
+      "risk_ratio": 3.212,
+      "risk_ratio_reference": "white"
+    },
+    "Hispanic": {
+      "enrolled": 500,
+      "students_suspended": 35,
+      "students_suspended_per_100": 7.0,
+      "days_lost_per_100": 24.0,
+      "composition_index": 0.758,
+      "documented_intervention_share": null,
+      "subjective_share": 0.45,
+      "repeat_share": 0.143,
+      "risk_ratio": 1.499,
+      "risk_ratio_reference": "white"
+    },
+    "White": {
+      "enrolled": 300,
+      "students_suspended": 14,
+      "students_suspended_per_100": 4.67,
+      "days_lost_per_100": 16.0,
+      "composition_index": 0.505,
+      "documented_intervention_share": null,
+      "subjective_share": 0.25,
+      "repeat_share": 0.143,
+      "risk_ratio": 0.462,
+      "risk_ratio_reference": "all other students"
+    },
+    "Asian": {
+      "enrolled": 60,
+      "students_suspended": "<10",
+      "students_suspended_per_100": null,
+      "days_lost_per_100": null,
+      "composition_index": null,
+      "documented_intervention_share": null,
+      "subjective_share": null,
+      "repeat_share": null,
+      "risk_ratio": null,
+      "risk_ratio_reference": "white"
+    }
+  },
+  "enrollment": {
+    "Black": 400,
+    "Hispanic": 500,
+    "White": 300,
+    "Asian": 60
+  }
+}
