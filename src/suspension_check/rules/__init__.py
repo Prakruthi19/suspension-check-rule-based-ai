@@ -7,7 +7,7 @@ the evaluator then emits the flag as an Ask instead of an Assert, so a
 
 Rule packs are plain modules. Built-in packs are imported by
 ``load_builtin_packs()``; third-party packs register through the
-``dueproc.rule_packs`` entry-point group.
+``suspension_check.rule_packs`` entry-point group.
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 from enum import StrEnum
 from importlib.metadata import entry_points
 
-from dueproc.facts import Facts, Tri
+from suspension_check.facts import Facts, Tri
 
 __all__ = [
     "Flag",
@@ -158,7 +158,7 @@ def _sort_key(r: Rule) -> tuple[int, str, int]:
     return (_LAYER_ORDER[r.layer], prefix, int(num) if num.isdigit() else 0)
 
 
-_BUILTIN_PACKS = ("dueproc.rules.illinois", "dueproc.rules.idea")
+_BUILTIN_PACKS = ("suspension_check.rules.illinois", "suspension_check.rules.idea")
 _loaded = False
 
 
@@ -169,7 +169,7 @@ def load_builtin_packs() -> None:
     _loaded = True
     for mod in _BUILTIN_PACKS:
         importlib.import_module(mod)
-    for ep in entry_points(group="dueproc.rule_packs"):
+    for ep in entry_points(group="suspension_check.rule_packs"):
         ep.load()
 
 

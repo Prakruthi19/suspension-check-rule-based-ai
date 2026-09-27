@@ -1,14 +1,14 @@
 """Federal layer: IDEA discipline rules (34 CFR 300.530-300.536) and Section 504 (34 CFR 104.35).
 
 Rules never compute dates. The manifestation determination deadline and the
-other IDEA clocks are obligations emitted by ``dueproc.timeline``.
+other IDEA clocks are obligations emitted by ``suspension_check.timeline``.
 """
 
 from __future__ import annotations
 
-from dueproc.facts import Facts, ManifestationResult, RemovalKind
-from dueproc.rules import Layer, Severity, all3, is_no, rule
-from dueproc.rules.sources import SOURCES
+from suspension_check.facts import Facts, ManifestationResult, RemovalKind
+from suspension_check.rules import Layer, Severity, all3, is_no, rule
+from suspension_check.rules.sources import SOURCES
 
 FED = Layer.FEDERAL
 

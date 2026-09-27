@@ -21,19 +21,23 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import ValidationError
 
-from dueproc import __version__
-from dueproc.calendar import SchoolCalendar
-from dueproc.facts import Facts
-from dueproc.letters import review_request
-from dueproc.report import check
-from dueproc.rules import evaluate
+from suspension_check import __version__
+from suspension_check.calendar import SchoolCalendar
+from suspension_check.facts import Facts
+from suspension_check.letters import review_request
+from suspension_check.report import check
+from suspension_check.rules import evaluate
 
 MAX_BODY_BYTES = 32 * 1024
-RATE_LIMIT = int(os.environ.get("DUEPROC_RATE_LIMIT", "30"))  # requests per minute per client
-ALLOWED_ORIGINS = [o for o in os.environ.get("DUEPROC_ALLOWED_ORIGINS", "").split(",") if o]
+RATE_LIMIT = int(
+    os.environ.get("SUSPENSION_CHECK_RATE_LIMIT", "30")
+)  # requests per minute per client
+ALLOWED_ORIGINS = [
+    o for o in os.environ.get("SUSPENSION_CHECK_ALLOWED_ORIGINS", "").split(",") if o
+]
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
 
-log = logging.getLogger("dueproc.api")
+log = logging.getLogger("suspension_check.api")
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 app = FastAPI(title="Suspension Check API", version=__version__, docs_url=None, redoc_url=None)

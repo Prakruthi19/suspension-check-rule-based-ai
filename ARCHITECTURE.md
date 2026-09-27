@@ -3,7 +3,7 @@
 One core library, thin products on top.
 
 ```
-src/dueproc/
+src/suspension_check/
   facts.py            Pydantic v2 models for everything the survey collects (strict, frozen)
   rules/__init__.py   registry, @rule decorator, evaluate(), three-valued helpers
   rules/sources.py    every source URL, once
@@ -14,7 +14,7 @@ src/dueproc/
   timeline.py         two table-driven state machines and the Obligation dataclass
   letters/            Jinja2 letter templates (review request only, so far)
   report.py           check(): rules + timeline + disclaimer + resource card as plain data
-  cli.py              dueproc check / dueproc rules
+  cli.py              suspension-check check / suspension-check rules
 app/api/main.py       stateless FastAPI service (POST /api/check)
 app/web/index.html    Family Check page (no build step)
 synthetic/            Faker-based discipline log generator, three logs, expected metrics
@@ -28,7 +28,7 @@ tools/                export_rule_table.py (registry -> docs/legal/*.xlsx, *.md)
   `severity` (information, ask, assert), `pack`, and `reviewed`.
 - Rules register themselves with `@rule`; there is no hand-maintained list.
   Built-in packs load on first use; external packs register through the
-  `dueproc.rule_packs` entry-point group, which is how the IEP Placement
+  `suspension_check.rule_packs` entry-point group, which is how the IEP Placement
   Checklist pack will load in Week 7 without touching the core.
 - `None` means "cannot decide on these facts". The evaluator emits the flag as
   an Ask with `uncertain=True`. Combine optional facts with `all3` / `any3`

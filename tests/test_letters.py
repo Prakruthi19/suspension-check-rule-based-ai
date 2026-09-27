@@ -9,9 +9,9 @@ from datetime import date
 
 import pytest
 
-from dueproc.facts import Facts
-from dueproc.letters import review_request
-from dueproc.rules import evaluate
+from suspension_check.facts import Facts
+from suspension_check.letters import review_request
+from suspension_check.rules import evaluate
 
 from .conftest import EXAMPLES, FIXTURES, load_json
 

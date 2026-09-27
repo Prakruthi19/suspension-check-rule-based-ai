@@ -6,9 +6,9 @@ with ``reviewed=False`` until the Gate 3 legal review signs it off.
 
 from __future__ import annotations
 
-from dueproc.facts import Facts, NoticeReceived, RemovalKind
-from dueproc.rules import Layer, Severity, any3, is_no, rule
-from dueproc.rules.sources import SOURCES
+from suspension_check.facts import Facts, NoticeReceived, RemovalKind
+from suspension_check.rules import Layer, Severity, any3, is_no, rule
+from suspension_check.rules.sources import SOURCES
 
 IL = Layer.ILLINOIS
 URL = SOURCES["ILCS_10_22_6"]

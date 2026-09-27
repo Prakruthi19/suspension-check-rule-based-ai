@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from dueproc.facts import Facts
+from suspension_check.facts import Facts
 
 
 def _facts(**overrides):

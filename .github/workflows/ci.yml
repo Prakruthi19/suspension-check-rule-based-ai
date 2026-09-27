@@ -22,6 +22,6 @@ jobs:
         run: uv run pytest --cov --cov-report=term-missing
       - name: Gate 2 scenarios through the CLI
         run: |
-          for f in examples/scenario_*.json; do uv run dueproc check "$f" --today 2026-09-27 > /dev/null; done
+          for f in examples/scenario_*.json; do uv run suspension-check check "$f" --today 2026-09-27 > /dev/null; done
       - name: Dependency audit
         run: uv run pip-audit --skip-editable

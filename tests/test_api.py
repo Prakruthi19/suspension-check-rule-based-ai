@@ -77,7 +77,7 @@ def test_rate_limit(monkeypatch):
 def test_logs_never_contain_request_body(caplog):
     main._hits.clear()
     body = load_json(EXAMPLES / "scenario_a_two_day_no_notice.json")
-    with caplog.at_level(logging.INFO, logger="dueproc.api"):
+    with caplog.at_level(logging.INFO, logger="suspension_check.api"):
         _post(body)
     text = "\n".join(caplog.messages)
     assert "rules=IL-01" in text

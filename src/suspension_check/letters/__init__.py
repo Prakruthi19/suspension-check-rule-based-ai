@@ -11,11 +11,11 @@ from datetime import date
 
 from jinja2 import Environment, PackageLoader, StrictUndefined
 
-from dueproc.facts import Facts, NoticeReceived, RemovalKind
-from dueproc.rules import Flag
+from suspension_check.facts import Facts, NoticeReceived, RemovalKind
+from suspension_check.rules import Flag
 
 _env = Environment(
-    loader=PackageLoader("dueproc.letters", "templates"),
+    loader=PackageLoader("suspension_check.letters", "templates"),
     undefined=StrictUndefined,
     trim_blocks=True,
     lstrip_blocks=True,

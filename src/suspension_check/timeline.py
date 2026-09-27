@@ -14,8 +14,8 @@ from datetime import date
 from enum import StrEnum
 from typing import Generic, TypeVar
 
-from dueproc.calendar import BeyondSchoolYear, SchoolCalendar
-from dueproc.facts import Facts, ManifestationResult, NoticeReceived, RemovalKind
+from suspension_check.calendar import BeyondSchoolYear, SchoolCalendar
+from suspension_check.facts import Facts, ManifestationResult, NoticeReceived, RemovalKind
 
 __all__ = [
     "IdeaState",

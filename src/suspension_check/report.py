@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from datetime import date
 
-from dueproc.calendar import SchoolCalendar
-from dueproc.facts import Facts
-from dueproc.rules import evaluate
-from dueproc.timeline import build_timeline, records_due_if_requested
+from suspension_check.calendar import SchoolCalendar
+from suspension_check.facts import Facts
+from suspension_check.rules import evaluate
+from suspension_check.timeline import build_timeline, records_due_if_requested
 
 DISCLAIMER = (
     "This is general information about Illinois and federal school discipline law, "

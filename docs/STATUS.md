@@ -19,7 +19,7 @@ As of 2026-09-27, after about 40 hours of work (two weeks at 20 hours).
 1. Replace the provisional CPS calendar with the official one.
 2. Re-verify every quote and subsection letter against ilga.gov and eCFR;
    resolve the ISSRA response-time question.
-3. Week 3: `dueproc.redact` (Presidio + student-ID recognizer), then turn the
+3. Week 3: `suspension_check.redact` (Presidio + student-ID recognizer), then turn the
    incident-description field back on; DOCX and printable HTML letters; MDR,
    records, and expulsion letter variants; front-end decision at Gate 2.
 4. CPS layer from the current Student Code of Conduct.
