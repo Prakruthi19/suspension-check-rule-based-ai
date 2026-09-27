@@ -1,0 +1,38 @@
+{
+  "rule": "IL-02",
+  "expect": "silent",
+  "description": "Notice states the right to a review.",
+  "facts": {
+    "student": {
+      "district": "cps",
+      "grade_band": "6_8"
+    },
+    "incident_date": "2026-09-21",
+    "removal": {
+      "kind": "oss",
+      "decision_date": "2026-09-21",
+      "start_date": "2026-09-22",
+      "school_days": 2
+    },
+    "notice": {
+      "received": "written",
+      "states_reasons": "yes",
+      "states_specific_act": "yes",
+      "states_rationale_for_length": "yes",
+      "documents_interventions": "yes",
+      "states_threat_or_disruption": "yes",
+      "states_review_right": "yes",
+      "support_services_determination": "yes",
+      "mentions_makeup_work": "yes",
+      "procedural_safeguards_notice": "yes",
+      "mdr_invitation": "yes",
+      "cites_zero_tolerance": "no"
+    },
+    "prior": {
+      "school_days_this_year": 0
+    },
+    "actions": {
+      "records_requested_on": "2026-09-22"
+    }
+  }
+}

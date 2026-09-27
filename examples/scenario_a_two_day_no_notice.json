@@ -1,0 +1,7 @@
+{
+  "student": {"district": "cps", "grade_band": "6_8"},
+  "incident_date": "2026-09-21",
+  "removal": {"kind": "oss", "decision_date": "2026-09-21", "start_date": "2026-09-22", "school_days": 2},
+  "notice": {"received": "phone_only"},
+  "prior": {"school_days_this_year": 0}
+}

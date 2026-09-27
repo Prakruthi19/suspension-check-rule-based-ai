@@ -1,0 +1,20 @@
+{
+  "student": {"district": "cps", "grade_band": "3_5", "disability": {"iep": true}},
+  "incident_date": "2026-09-21",
+  "removal": {"kind": "oss", "decision_date": "2026-09-22", "start_date": "2026-09-23", "school_days": 7},
+  "notice": {
+    "received": "written",
+    "states_reasons": "yes",
+    "states_specific_act": "yes",
+    "states_rationale_for_length": "no",
+    "documents_interventions": "no",
+    "states_threat_or_disruption": "yes",
+    "states_review_right": "yes",
+    "support_services_determination": "no",
+    "mentions_makeup_work": "unknown",
+    "procedural_safeguards_notice": "no",
+    "mdr_invitation": "no",
+    "cites_zero_tolerance": "no"
+  },
+  "prior": {"school_days_this_year": 5, "informal_removals_reported": true}
+}

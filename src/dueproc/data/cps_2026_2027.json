@@ -1,0 +1,53 @@
+{
+  "name": "Chicago Public Schools 2026-2027 (PROVISIONAL)",
+  "status": "provisional: weekday holidays only; professional-development and report-card-pickup days not yet added. Verify against the official CPS calendar at cps.edu before relying on any date.",
+  "first_day": "2026-08-17",
+  "last_day": "2027-06-10",
+  "closures": [
+    {
+      "start": "2026-09-07",
+      "end": "2026-09-07",
+      "name": "Labor Day"
+    },
+    {
+      "start": "2026-10-12",
+      "end": "2026-10-12",
+      "name": "Indigenous Peoples' Day"
+    },
+    {
+      "start": "2026-11-11",
+      "end": "2026-11-11",
+      "name": "Veterans Day"
+    },
+    {
+      "start": "2026-11-25",
+      "end": "2026-11-27",
+      "name": "Thanksgiving break"
+    },
+    {
+      "start": "2026-12-21",
+      "end": "2027-01-01",
+      "name": "Winter break"
+    },
+    {
+      "start": "2027-01-18",
+      "end": "2027-01-18",
+      "name": "Martin Luther King Jr. Day"
+    },
+    {
+      "start": "2027-02-15",
+      "end": "2027-02-15",
+      "name": "Presidents' Day"
+    },
+    {
+      "start": "2027-03-29",
+      "end": "2027-04-02",
+      "name": "Spring break"
+    },
+    {
+      "start": "2027-05-31",
+      "end": "2027-05-31",
+      "name": "Memorial Day"
+    }
+  ]
+}
