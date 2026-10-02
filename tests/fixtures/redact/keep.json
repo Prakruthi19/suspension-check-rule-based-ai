@@ -1,0 +1,34 @@
+[
+  {
+    "id": "dates_and_days",
+    "text": "Suspended on 09/21/2026 for 3 school days, returning Thursday.",
+    "keep": [
+      "09/21/2026",
+      "3 school days",
+      "Thursday"
+    ]
+  },
+  {
+    "id": "grade_and_room",
+    "text": "He is in grade 7, room 214.",
+    "keep": [
+      "grade 7",
+      "214"
+    ]
+  },
+  {
+    "id": "plain_description",
+    "text": "There was an argument at recess and my child was sent home.",
+    "keep": [
+      "argument at recess",
+      "sent home"
+    ]
+  },
+  {
+    "id": "role_kept",
+    "text": "Contact Assistant Principal Linda Nguyen about the hearing.",
+    "keep": [
+      "Assistant Principal"
+    ]
+  }
+]

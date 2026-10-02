@@ -22,7 +22,7 @@ in the decision path.
 
 ![Family Check on synthetic facts](docs/screenshot_family_check.png)
 
-## Status (alpha, end of build week 2)
+## Status (alpha, end of build week 3, v0.2.0-alpha)
 
 | Area | State |
 |---|---|
@@ -30,12 +30,12 @@ in the decision path.
 | Facts models, rule registry, three-valued evaluation | Done |
 | School calendar (weekends, closures, JSON and .ics import) | Done. Bundled CPS 2026-27 calendar is **provisional** |
 | Timeline state machine (main track + IDEA track) | Done |
-| CLI: `suspension-check check`, `suspension-check rules` | Done |
-| Tests: fixtures for every rule, Hypothesis property tests, letter goldens, no-persistence check | Done: 230 tests, 97% coverage |
+| CLI: `check`, `letter`, `redact`, `rules` | Done |
+| Tests: rule fixtures, property tests, letter goldens, adversarial redaction, no-persistence check | Done: 300 tests, 97% coverage |
 | Synthetic discipline logs with expected metrics | Done, `synthetic/` |
-| Review-request letter (plain text) | Early spike |
-| Family Check web page + stateless API | Early spike (vanilla HTML, not yet deployed) |
-| Redaction (Presidio), DOCX letters, other letter variants | Not started (Week 3) |
+| Redaction on ingest (Presidio + custom recognizers) for the incident description | Done; 22 adversarial fixtures |
+| Four letters (review, MDR, records, expulsion) as text, printable HTML, and DOCX | Done; goldens for every scenario |
+| Family Check web page + stateless API | Working spike (vanilla HTML, not yet deployed); React port planned for Week 4 |
 | CPS rule layer | Not started (needs current Code of Conduct) |
 | Pattern Check metrics and upload | Not started (Week 5) |
 
@@ -52,7 +52,13 @@ uv sync --all-extras
 uv run pytest                       # full suite with coverage gate
 uv run suspension-check rules                # list every rule and its review status
 uv run suspension-check check examples/scenario_b_iep_cumulative_twelve.json --today 2026-09-27
+uv run suspension-check letter examples/scenario_b_iep_cumulative_twelve.json --variant mdr_request
+uv run suspension-check redact "Call Marcus Johnson at (773) 555-0142"
 ```
+
+`--all-extras` installs redaction (Presidio and a small spaCy model) and the API.
+The core engine needs neither. A ten-minute walkthrough is in
+[docs/gate2_demo.md](docs/gate2_demo.md).
 
 Run the web demo:
 
@@ -97,7 +103,9 @@ missing. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Privacy
 
-No database, no files written, no sessions. The API validates in memory and
+Free text is redacted before validation (`suspension_check.ingest`), so no rule,
+letter, response, or log ever sees the original. No database, no files written,
+no sessions. The API validates in memory and
 logs only a request ID, timing, and rule IDs. `tests/test_no_persistence.py`
 fails the build if library or app code imports a storage client or opens a
 file for writing.

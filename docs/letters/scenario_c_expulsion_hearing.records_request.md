@@ -1,0 +1,29 @@
+# Request for school records
+
+Synthetic scenario: `scenario_c_expulsion_hearing.json`
+
+```text
+September 27, 2026
+
+[Principal name], Principal, [School name]
+cc: [Records custodian, if known]
+
+Re: Request to inspect and copy school student records for [Student first name], grade [X]
+
+Dear [Principal name]:
+
+I am the parent or guardian of [Student first name]. Under the Illinois School Student Records Act (105 ILCS 10/5), I request to inspect and receive copies of [Student first name]'s school student records, including:
+
+- the discipline referral and incident report for the incident on September 16, 2026;
+- any written statements, and the names of staff who took part in the decision;
+- the written recommended expulsion notice and decision;
+- [Student first name]'s discipline record for this school year, including any days sent home early;
+- any record of behavioral or disciplinary interventions attempted before this recommended expulsion.
+
+Please tell me in writing when the records will be available. If I count correctly, the response is due by October 19, 2026. If any record will not be provided, please tell me which one and why.
+
+Sincerely,
+
+[Parent or guardian name]
+[Phone] | [Email] | [Mailing address]
+```

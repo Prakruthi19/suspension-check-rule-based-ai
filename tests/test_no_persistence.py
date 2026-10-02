@@ -55,11 +55,19 @@ def test_no_storage_imports(path):
     assert not bad, f"{path.name} imports storage modules: {bad}"
 
 
+# A write to an in-memory buffer is allowed only on a line that says so.
+ALLOW_MARKER = "# persistence-ok: in-memory buffer"
+
+
 @pytest.mark.parametrize("path", CHECKED, ids=lambda p: str(p.relative_to(ROOT)))
 def test_no_file_writes(path):
-    tree = ast.parse(path.read_text(encoding="utf-8"))
+    source = path.read_text(encoding="utf-8")
+    lines = source.splitlines()
+    tree = ast.parse(source)
     for node in ast.walk(tree):
         if not isinstance(node, ast.Call):
+            continue
+        if ALLOW_MARKER in lines[node.lineno - 1]:
             continue
         fn = node.func
         name = fn.attr if isinstance(fn, ast.Attribute) else getattr(fn, "id", "")
@@ -76,6 +84,16 @@ def test_no_file_writes(path):
                 )
             else:
                 assert mode is None, f"{path.name}:{node.lineno} open() with a non-literal mode"
+
+
+def test_allowed_writes_are_only_in_memory():
+    allowed = [
+        (p, line)
+        for p in CHECKED
+        for line in p.read_text(encoding="utf-8").splitlines()
+        if ALLOW_MARKER in line
+    ]
+    assert all("buf" in line for _, line in allowed), allowed
 
 
 def test_checker_catches_a_write(tmp_path):
