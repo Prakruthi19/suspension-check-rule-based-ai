@@ -36,6 +36,7 @@
   .examples span { color: var(--muted); font-size: .9rem; }
   button { font: inherit; cursor: pointer; border-radius: 6px; border: 1px solid var(--line);
     background: var(--panel); color: var(--ink); padding: 6px 12px; }
+  button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 -3px 0 var(--accent); font-weight: 600; }
   button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent);
     padding: 10px 20px; font-weight: 600; }
   :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
@@ -155,6 +156,10 @@
       <div class="checks">
         <label><input type="checkbox" name="informal_removals_reported"> I have been asked to pick my child up early or keep them home before</label>
       </div>
+      <label style="margin-top:12px"><span>In a sentence or two, what does the school say happened? (optional)</span>
+        <textarea name="incident_description" rows="3" maxlength="1000"
+          style="width:100%;font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)"></textarea>
+        <p class="hint">Names, phone numbers, emails, addresses and student ID numbers are removed before anything else happens. Nothing is saved.</p></label>
     </fieldset>
 
     <fieldset>
@@ -222,6 +227,7 @@ const EXAMPLES = {
   b: { district: "cps", grade_band: "3_5", iep: true, kind: "oss", incident_date: "2026-09-21",
        decision_date: "2026-09-22", start_date: "2026-09-23", school_days: 7, prior_days: "5",
        informal_removals_reported: true, received: "written",
+       incident_description: "Dean Ortiz says Jaylen Brooks threw a chair in room 214. Call me at 773-555-0188.",
        notice: { states_reasons: "yes", states_specific_act: "yes", states_rationale_for_length: "no",
          documents_interventions: "no", states_threat_or_disruption: "yes", states_review_right: "yes",
          support_services_determination: "no", mentions_makeup_work: "unknown",
@@ -292,6 +298,7 @@ function toFacts() {
     prior: { school_days_this_year: f.prior_days.value === "" ? null : Number(f.prior_days.value),
       informal_removals_reported: f.informal_removals_reported.checked },
     actions: { review_requested_on: v("review_requested_on"), records_requested_on: v("records_requested_on") },
+    incident_description: f.incident_description.value.trim() || null,
   };
   if (facts.removal.kind === "expulsion")
     facts.expulsion = { hearing_request_by_certified_mail: v("hearing_request_by_certified_mail"),
@@ -307,6 +314,16 @@ const el = (tag, attrs = {}, ...kids) => {
 };
 const SEV = { assert: "Assert: the school appears to have missed this", ask: "Ask: request this in writing",
   information: "Know this" };
+const REDACTED = { PERSON: "names", PHONE_NUMBER: "phone numbers", EMAIL_ADDRESS: "email addresses",
+  STREET_ADDRESS: "street addresses", STUDENT_ID: "student ID numbers", US_SSN: "Social Security numbers" };
+let lastBody = null, lastQs = "";
+async function download(variant, format) {
+  const res = await fetch(`/api/letter?variant=${variant}&format=${format}` + (lastQs ? "&" + lastQs.slice(1) : ""),
+    { method: "POST", headers: { "content-type": "application/json" }, body: lastBody });
+  if (!res.ok) { document.getElementById("form-error").textContent = "Could not build the file."; return; }
+  const a = el("a", { href: URL.createObjectURL(await res.blob()), download: `${variant}.${format}` });
+  document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);
+}
 const fmt = iso => iso ? new Date(iso + "T12:00:00").toLocaleDateString("en-US",
   { weekday: "short", month: "short", day: "numeric", year: "numeric" }) : "No date";
 
@@ -354,20 +371,38 @@ function render(r) {
   }
   results.append(flags);
 
-  const copy = el("button", { type: "button" }, "Copy letter");
-  copy.addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(r.letter); copy.textContent = "Copied"; }
-    catch { copy.textContent = "Select the text to copy"; }
+  if (r.description)
+    results.append(el("section", { class: "card" }, el("h2", {}, "Your description, as we kept it"),
+      el("p", {}, r.description),
+      el("p", { class: "hint" }, r.redacted.length
+        ? "We removed: " + r.redacted.map(x => REDACTED[x] || x).join(", ") + ". The original text was never stored or logged."
+        : "Nothing identifying was found. The text was not stored or logged.")));
+
+  const card = el("section", { class: "card" }, el("h2", {}, "Your letters"),
+    el("p", { class: "hint" }, "Fill in the parts in [brackets] before you send. Keep a copy and note the date you sent it."));
+  const tabs = el("div", { class: "row", role: "group", "aria-label": "Choose a letter" });
+  const pane = el("div");
+  card.append(tabs, pane);
+  const show = (L, btn) => {
+    tabs.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
+    const copy = el("button", { type: "button" }, "Copy text");
+    copy.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(L.text); copy.textContent = "Copied"; }
+      catch { copy.textContent = "Select the text to copy"; }
+    });
+    const word = el("button", { type: "button", class: "primary" }, "Download Word (.docx)");
+    word.addEventListener("click", () => download(L.variant, "docx"));
+    const page = el("button", { type: "button" }, "Printable page (.html)");
+    page.addEventListener("click", () => download(L.variant, "html"));
+    pane.replaceChildren(el("div", { class: "row" }, word, page, copy), el("pre", { class: "letter" }, L.text));
+  };
+  r.letters.forEach((L, i) => {
+    const b = el("button", { type: "button", "aria-pressed": "false" }, L.title);
+    b.addEventListener("click", () => show(L, b));
+    tabs.append(b);
+    if (i === 0) show(L, b);
   });
-  const dl = el("button", { type: "button" }, "Download .txt");
-  dl.addEventListener("click", () => {
-    const a = el("a", { href: URL.createObjectURL(new Blob([r.letter], { type: "text/plain" })),
-      download: "suspension-review-request.txt" });
-    a.click(); URL.revokeObjectURL(a.href);
-  });
-  results.append(el("section", { class: "card" }, el("h2", {}, "Your letter: request for review"),
-    el("p", { class: "hint" }, "Fill in the parts in [brackets] before you send it. Keep a copy."),
-    el("div", { class: "row" }, copy, dl), el("pre", { class: "letter" }, r.letter)));
+  results.append(card);
 
   const list = el("ul", { class: "resources" });
   for (const x of r.resources)
@@ -385,8 +420,9 @@ form.addEventListener("submit", async e => {
     err.textContent = "Please fill in the three dates."; return;
   }
   const qs = asOf ? "?as_of=" + asOf : "";
+  lastBody = JSON.stringify(toFacts()); lastQs = qs;
   const res = await fetch("/api/check" + qs, { method: "POST", headers: { "content-type": "application/json" },
-    body: JSON.stringify(toFacts()) });
+    body: lastBody });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     err.textContent = body.detail?.invalid_fields ? "Please check: " + body.detail.invalid_fields.join(", ")

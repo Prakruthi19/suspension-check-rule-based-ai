@@ -1,0 +1,44 @@
+{{ today }}
+
+[Superintendent or hearing officer name]
+[District name]
+cc: [Principal name], Principal, [School name]; [Board of Education, Secretary]
+
+Re: Expulsion hearing for [Student first name], grade [X]{% if hearing_date %}, scheduled for {{ hearing_date }}{% endif %}{{ "" }}
+
+Dear [Superintendent or hearing officer name]:
+
+I am the parent or guardian of [Student first name]. I am writing about the recommended expulsion following the incident on {{ incident_date }}.
+{% if no_certified_mail %}
+
+I have not received a request to appear at a hearing sent by registered or certified mail stating the time, place, and purpose of the hearing, as 105 ILCS 5/10-22.6(a) requires. Please send it.
+{% endif %}{{ "" }}
+{% if hearing_date %}
+
+I intend to attend the hearing on {{ hearing_date }}{% if support_person %} and may bring a support person or representative{% endif %}.
+{% endif %}{{ "" }}
+{% if continuance %}
+
+I need time to review the records and prepare. I request a continuance of the hearing to a date at least [number] school days after I receive the records requested below.
+{% endif %}{{ "" }}
+
+Before the hearing, please provide copies of all documents the district will rely on, including the incident report, any statements, [Student first name]'s discipline record, and any record of the behavioral and disciplinary interventions that were attempted before expulsion was recommended. Expulsion may be used only after other appropriate and available interventions have been exhausted (105 ILCS 5/10-22.6(b-20)).
+{% if decision_incomplete %}
+
+The written decision I received does not include all of the following: the specific reasons for the expulsion, the rationale for its length, and the interventions that were considered. 105 ILCS 5/10-22.6(a) requires all three. Please provide a complete written decision.
+{% endif %}{{ "" }}
+{% if firearm %}
+
+I ask the superintendent to review the length of the expulsion on a case-by-case basis, as 105 ILCS 5/10-22.6(d) allows.
+{% endif %}{{ "" }}
+{% if idea %}
+
+[Student first name] has an IEP or the district had a basis of knowledge of a disability. A manifestation determination review must be held within ten school days of the decision to change placement (34 CFR 300.530(e)), and I request that it be held before the expulsion hearing.
+{% endif %}{{ "" }}
+
+Please confirm the hearing date, time, and place in writing, and send the requested documents to me at the address or email below.
+
+Sincerely,
+
+[Parent or guardian name]
+[Phone] | [Email] | [Mailing address]

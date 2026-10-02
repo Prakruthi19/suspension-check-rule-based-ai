@@ -1,0 +1,39 @@
+{{ today }}
+
+[Principal name], Principal, [School name]
+cc: [Case manager or special education coordinator]; [Network Chief or Superintendent]
+
+Re: Request for a manifestation determination review and IEP team meeting for [Student first name], grade [X]
+
+Dear [Principal name]:
+
+I am the parent or guardian of [Student first name]. On {{ decision_date }} the school decided on a {{ days }}-school-day {{ kind }}.{% if cumulative is not none %} With this removal, [Student first name] has been removed from school for {{ cumulative }} school days this school year.{% endif %}{{ "" }}
+
+{% if basis_of_knowledge %}
+[Student first name] does not have an IEP yet, but before this incident I asked in writing for an evaluation, or raised a concern in writing. Under 34 CFR 300.534 the district had a basis of knowledge, so the IDEA discipline protections apply. I request an expedited evaluation.
+{% else %}
+Because [Student first name] has an IEP, this removal may be a change of placement under 34 CFR 300.536.
+{% endif %}{{ "" }}
+
+I request a manifestation determination review within ten school days of the removal decision, as required by 34 CFR 300.530(e){% if mdr_due %}. By my count that is no later than {{ mdr_due }}{% endif %}. Please send me the meeting date and time in writing, and share all records the team will rely on before the meeting, including the incident report, any statements, the current IEP, and any behavior intervention plan.
+{% if safeguards %}
+
+I have not received the procedural safeguards notice that 34 CFR 300.530(h) requires on the day of the decision. Please send it to me.
+{% endif %}{{ "" }}
+{% if services %}
+
+After ten school days of removal in a school year, the district must continue to provide educational services under 34 CFR 300.530(d). Please tell me in writing what services [Student first name] will receive during the removal.
+{% endif %}{{ "" }}
+{% if informal %}
+
+[Student first name] has also been sent home early or asked to stay home on days that were not recorded as suspensions. Those days count toward the ten-day limit. Please record them. I will bring the dates I have to the meeting.
+{% endif %}{{ "" }}
+
+I also ask that the team review, or conduct, a functional behavioral assessment and review the behavior intervention plan at the meeting.
+
+Please confirm the meeting date and send the requested documents to me at the address or email below.
+
+Sincerely,
+
+[Parent or guardian name]
+[Phone] | [Email] | [Mailing address]

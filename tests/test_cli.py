@@ -65,3 +65,45 @@ def test_rules_listing(capsys):
     main(["rules"])
     out = capsys.readouterr().out
     assert out.count("pending review") == 26
+
+
+@pytest.mark.parametrize("fmt", ["txt", "html"])
+def test_letter_command(fmt, capsys):
+    path = str(EXAMPLES / "scenario_b_iep_cumulative_twelve.json")
+    assert (
+        main(["letter", path, "--variant", "mdr_request", "--format", fmt, "--today", "2026-09-27"])
+        == 0
+    )
+    out = capsys.readouterr().out
+    assert "34 CFR 300.530(e)" in out
+
+
+def test_letter_docx_refuses_terminal(monkeypatch, capsys):
+    monkeypatch.setattr("sys.stdout.isatty", lambda: True)
+    path = str(EXAMPLES / "scenario_a_two_day_no_notice.json")
+    assert main(["letter", path, "--format", "docx"]) == 2
+
+
+def test_letter_docx_to_pipe(monkeypatch):
+    import io
+    import sys
+
+    buf = io.BytesIO()
+
+    class Out:
+        buffer = buf
+
+        def isatty(self):
+            return False
+
+    monkeypatch.setattr(sys, "stdout", Out())
+    path = str(EXAMPLES / "scenario_a_two_day_no_notice.json")
+    assert main(["letter", path, "--format", "docx", "--today", "2026-09-27"]) == 0
+    assert buf.getvalue()[:2] == b"PK"
+
+
+def test_redact_command(capsys):
+    pytest.importorskip("presidio_analyzer")
+    main(["redact", "Call Marcus Johnson at (773) 555-0142."])
+    out = capsys.readouterr().out
+    assert "Marcus" not in out and "<PHONE>" in out

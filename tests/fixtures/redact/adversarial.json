@@ -1,0 +1,21 @@
+[
+  {"id": "name_mid_sentence", "text": "The dean said my son pushed Marcus Johnson in the hallway after lunch.", "secrets": ["Marcus Johnson"]},
+  {"id": "name_at_start", "text": "Keisha Williams says she was defending herself.", "secrets": ["Keisha Williams"]},
+  {"id": "possessive_name", "text": "It happened in Ms. Rodriguez's classroom during math.", "secrets": ["Rodriguez"]},
+  {"id": "teacher_title", "text": "Mr. Patel wrote her up for being defiant.", "secrets": ["Patel"]},
+  {"id": "phone_parens", "text": "Call me at (773) 555-0142 after 3pm.", "secrets": ["555-0142", "(773)"]},
+  {"id": "phone_dots", "text": "my cell is 773.555.0199 thanks", "secrets": ["773.555.0199"]},
+  {"id": "phone_plus1", "text": "Reach me on +1 312-555-0100 anytime.", "secrets": ["312-555-0100"]},
+  {"id": "phone_spaces", "text": "school called from 312 555 0177 at noon", "secrets": ["312 555 0177"]},
+  {"id": "email", "text": "Email the notice to tanya.brooks+school@example.org please.", "secrets": ["tanya.brooks+school@example.org"]},
+  {"id": "street_address", "text": "We live at 4821 S Prairie Ave Apt 2 near the school.", "secrets": ["4821 S Prairie Ave"]},
+  {"id": "student_id_cued", "text": "His student ID is 50123456 and the referral number is on the form.", "secrets": ["50123456"]},
+  {"id": "student_id_hash", "text": "Referral for student #40987654 was filed Monday.", "secrets": ["40987654"]},
+  {"id": "student_id_embedded", "text": "ID:61234567 suspended 3 days", "secrets": ["61234567"]},
+  {"id": "ssn", "text": "They asked for my SSN 123-45-6789 on the form.", "secrets": ["123-45-6789"]},
+  {
+    "id": "full_pasted_notice",
+    "text": "NOTICE OF SUSPENSION. Student: Jamal Carter, Student ID 50876543, Grade 7. On 09/21/2026 Jamal Carter was involved in a physical altercation with another student in the cafeteria. He will serve 3 days out-of-school suspension. Contact Assistant Principal Linda Nguyen at (773) 535-0000 or lnguyen@cps.example.edu. Parent: Denise Carter, 1150 W Garfield Blvd.",
+    "secrets": ["Jamal", "Carter", "50876543", "Linda Nguyen", "535-0000", "lnguyen@cps.example.edu", "Denise", "1150 W Garfield Blvd"]
+  }
+]

@@ -18,13 +18,14 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from pydantic import ValidationError
 
 from suspension_check import __version__
 from suspension_check.calendar import SchoolCalendar
-from suspension_check.facts import Facts
-from suspension_check.letters import review_request
+from suspension_check.ingest import ingest
+from suspension_check.letters import TITLES, Variant, applicable, render_text
+from suspension_check.letters.formats import to_docx, to_html
 from suspension_check.report import check
 from suspension_check.rules import evaluate
 
@@ -117,18 +118,67 @@ def health() -> dict[str, str]:
     return {"status": "ok", "version": __version__, "calendar": CALENDAR.name}
 
 
+def _ingest(raw: bytes):
+    """Redact, then validate. Errors name fields, never the submitted values."""
+    try:
+        return ingest(raw)
+    except ValidationError as exc:
+        fields = sorted({".".join(str(p) for p in e["loc"]) for e in exc.errors()})
+        raise HTTPException(status_code=422, detail={"invalid_fields": fields}) from None
+    except ValueError:
+        raise HTTPException(status_code=422, detail={"invalid_fields": ["body"]}) from None
+
+
 @app.post("/api/check")
 async def api_check(request: Request, as_of: date | None = None) -> dict:
     """Evaluate facts. ``as_of`` lets a demo pin "today" (defaults to the real date)."""
-    raw = await request.body()
-    try:
-        facts = Facts.model_validate_json(raw)
-    except ValidationError as exc:
-        # Report which fields failed, never the submitted values.
-        fields = sorted({".".join(str(p) for p in e["loc"]) for e in exc.errors()})
-        raise HTTPException(status_code=422, detail={"invalid_fields": fields}) from None
+    got = _ingest(await request.body())
+    facts = got.facts
     today = as_of or date.today()
+    flags = evaluate(facts)
     result = check(facts, CALENDAR, today)
-    result["letter"] = review_request(facts, evaluate(facts), today)
+    result["description"] = facts.incident_description
+    result["redacted"] = sorted(set(got.redacted_entities))
+    result["letters"] = [
+        {
+            "variant": v.value,
+            "title": TITLES[v],
+            "text": render_text(v, facts, flags, today, CALENDAR),
+        }
+        for v in applicable(facts, flags)
+    ]
+    result["letter"] = result["letters"][0]["text"]  # Week 2 clients
     request.state.rule_ids = [f["rule_id"] for f in result["flags"]]
     return result
+
+
+_FORMATS = {
+    "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "html": "text/html; charset=utf-8",
+    "txt": "text/plain; charset=utf-8",
+}
+
+
+@app.post("/api/letter")
+async def api_letter(
+    request: Request, variant: Variant, format: str = "docx", as_of: date | None = None
+) -> Response:
+    """One letter as a download. Built in memory; nothing is kept after the response."""
+    if format not in _FORMATS:
+        raise HTTPException(status_code=422, detail={"invalid_fields": ["format"]})
+    facts = _ingest(await request.body()).facts
+    flags = evaluate(facts)
+    text = render_text(variant, facts, flags, as_of or date.today(), CALENDAR)
+    title = TITLES[variant]
+    if format == "docx":
+        body: bytes | str = to_docx(text, title)
+    elif format == "html":
+        body = to_html(text, title)
+    else:
+        body = text
+    request.state.rule_ids = [f.rule_id for f in flags]
+    return Response(
+        content=body,
+        media_type=_FORMATS[format],
+        headers={"Content-Disposition": f'attachment; filename="{variant.value}.{format}"'},
+    )

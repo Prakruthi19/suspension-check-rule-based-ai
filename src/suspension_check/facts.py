@@ -156,6 +156,9 @@ class IdeaProcess(_Strict):
 class Facts(_Strict):
     student: Student = Field(default_factory=Student)
     incident_date: date
+    # Free text from the parent. Build Facts through ``suspension_check.ingest``
+    # so this is always redacted before validation; never put raw text here.
+    incident_description: str | None = Field(default=None, max_length=1000)
     removal: Removal
     notice: Notice = Field(default_factory=Notice)
     prior: PriorRemovals = Field(default_factory=PriorRemovals)

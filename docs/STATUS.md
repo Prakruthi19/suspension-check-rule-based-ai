@@ -1,6 +1,6 @@
 # Status and next steps
 
-As of 2026-09-27, after about 40 hours of work (two weeks at 20 hours).
+As of 2026-10-02, after about 60 hours of work (three weeks at 20 hours). Current release: v0.2.0-alpha.
 
 ## Done
 
@@ -10,20 +10,26 @@ As of 2026-09-27, after about 40 hours of work (two weeks at 20 hours).
 - Deadline table v1 with the unit of every clock. `docs/legal/deadlines_v1.xlsx`
 - Family Check survey draft and Pattern Check schema. `docs/survey_v1.md`, `docs/schema_v1.md`
 - Engine: facts, rules, calendar, timeline, report, CLI
-- Tests: 230 tests, 97% coverage, Hypothesis property tests, no-persistence check
+- Tests: 300 tests, 97% coverage, Hypothesis property tests, adversarial redaction, letter goldens, no-persistence check
 - Three synthetic discipline logs (CSV and XLSX) with expected metrics
-- Spikes: review-request letter, stateless API, one-page Family Check UI
+- Week 3: redaction on ingest (`redact.py`, `ingest.py`) with 22 adversarial fixtures
+- Week 3: four letters (review request, manifestation determination request,
+  records request, expulsion hearing response) as text, printable HTML and DOCX,
+  with goldens in `tests/fixtures/letters/` and samples in `docs/letters/`
+- Week 3: CLI `letter` and `redact` commands; API `/api/letter` download endpoint;
+  web page shows the redacted description and offers every applicable letter
+- Gate 2 demo script (`docs/gate2_demo.md`) and front-end recommendation (DECISIONS.md)
 
 ## Next (in brief order)
 
-1. Replace the provisional CPS calendar with the official one.
-2. Re-verify every quote and subsection letter against ilga.gov and eCFR;
+1. Gate 2 with Benjamin: run `docs/gate2_demo.md`, confirm React + Vite for v1.
+2. Replace the provisional CPS calendar with the official one.
+3. Re-verify every quote and subsection letter against ilga.gov and eCFR;
    resolve the ISSRA response-time question.
-3. Week 3: `suspension_check.redact` (Presidio + student-ID recognizer), then turn the
-   incident-description field back on; DOCX and printable HTML letters; MDR,
-   records, and expulsion letter variants; front-end decision at Gate 2.
-4. CPS layer from the current Student Code of Conduct.
-5. Week 4 onward: deploy alpha, accessibility pass, Pattern Check.
+4. Week 4: FastAPI hardening (CORS lock, deploy), React front end, PDF and .ics
+   timeline exports, accessibility pass, PRIVACY.md, alpha deployment.
+5. CPS layer from the current Student Code of Conduct.
+6. Week 5: Pattern Check (header mapping, metrics, suppression, LSC brief).
 
 ## Open questions for Benjamin
 
@@ -31,3 +37,5 @@ As of 2026-09-27, after about 40 hours of work (two weeks at 20 hours).
 - Should "sent home without paperwork" be treated as an out-of-school suspension
   for IL-05 to IL-08 thresholds, or only for notice rules (current behaviour)?
 - Who at ChiEAC will own the rule table and calendar updates after hand-off?
+- Is seven days the right trigger for asking for an expulsion-hearing continuance?
+- Redaction removes role words with names ("Dean Ortiz" becomes <PERSON>). OK to over-redact?

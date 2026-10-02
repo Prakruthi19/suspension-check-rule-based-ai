@@ -70,3 +70,56 @@ three variants are Week 3 work.
 `suspension-check-rule-based-ai`; Python package: `suspension_check`; command:
 `suspension-check`. "Rule-based AI" is meant in the expert-system sense: every
 decision is an explicit, cited, tested rule, and no ML model or LLM is used.
+
+## 2026-09-29 · Redaction: Presidio for names, explicit regex for everything else
+Presidio with the small English spaCy model (`en_core_web_sm`) finds names.
+Phones, emails, street addresses, student IDs and SSNs use our own regex
+recognizers so their behaviour is visible and testable. Two extra passes cover
+what the small model misses: names after a cue word ("Student:", "Mr.",
+"call", "Dean") and propagation (once "Jamal Carter" is found, every "Jamal"
+and "Carter" in the same text goes). Over-redaction is accepted; a removed
+role word costs less than a leaked name. Known limit: a lowercase or unusual
+name with no cue can still slip through; the adversarial fixtures grow as we
+find cases.
+
+## 2026-09-29 · Presidio's email and URL recognizers removed
+They fetch the public suffix list from the internet on first use. A privacy
+tool should make no outbound calls while handling a family's text.
+
+## 2026-09-30 · spaCy model is installed from a URL, not PyPI
+spaCy models are not on PyPI, so `en-core-web-sm` comes from `[tool.uv.sources]`.
+Redaction is an optional extra (`[redact]`); the core engine does not need it.
+Before the Week 7 PyPI release, decide between documenting a separate model
+install step or vendoring a smaller name list.
+
+## 2026-09-30 · Ingest order is enforced in one module
+`suspension_check.ingest` is the only front door: parse JSON, redact every
+free-text field, then validate. The CLI and API both use it, and a test
+asserts the original text never appears in any output (flags, timeline,
+letters, API response, logs).
+
+## 2026-09-30 · The incident description does not go into letters
+The redacted description is shown back to the parent so they can see what was
+removed, but no letter quotes it: placeholders like <PERSON> would read badly
+in a letter to the principal, and the letters do not need it.
+
+## 2026-10-01 · Four letter variants from one text template each
+Review request, manifestation determination request, records request, and
+expulsion hearing response. The plain-text template is the only source of
+wording; printable HTML and DOCX are built from it in memory, so the three
+formats cannot drift. DOCX author metadata is blank. Each output ends with a
+separate "keep this page" section with the disclaimer and resource card.
+Goldens: text and HTML exact; DOCX checked paragraph by paragraph.
+
+## 2026-10-01 · Expulsion letter asks for a continuance when the hearing is close
+If the hearing is seven calendar days away or less, or the certified-mail
+request never arrived (IL-12), the letter asks for a continuance. Seven days is
+a judgement call to confirm in the legal review.
+
+## 2026-10-02 · Front-end recommendation for Gate 2: React + Vite, not Streamlit
+Streamlit keeps per-user state in a server-side session, which conflicts with
+the no-server-sessions rule, and it gives less control over accessibility and
+keyboard order. The vanilla-HTML page has proven the API shape, so the React
+build in Week 4 is a port, not a redesign. If Week 4 runs short, the vanilla
+page stays as the v1 UI (it already meets the privacy rules); Streamlit is not
+the fallback. To be confirmed with Benjamin at Gate 2.

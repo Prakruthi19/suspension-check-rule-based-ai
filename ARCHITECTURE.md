@@ -12,10 +12,12 @@ src/suspension_check/
   calendar.py         SchoolCalendar: school-day arithmetic, JSON and .ics loading
   data/               bundled CPS 2026-2027 calendar (provisional)
   timeline.py         two table-driven state machines and the Obligation dataclass
-  letters/            Jinja2 letter templates (review request only, so far)
+  ingest.py           the only front door: parse, redact free text, then validate
+  redact.py           Presidio + custom recognizers; typed placeholders (<PERSON>, <PHONE>...)
+  letters/            four Jinja2 text templates; formats.py renders HTML and DOCX in memory
   report.py           check(): rules + timeline + disclaimer + resource card as plain data
-  cli.py              suspension-check check / suspension-check rules
-app/api/main.py       stateless FastAPI service (POST /api/check)
+  cli.py              suspension-check check / letter / redact / rules
+app/api/main.py       stateless FastAPI service (POST /api/check, POST /api/letter)
 app/web/index.html    Family Check page (no build step)
 synthetic/            Faker-based discipline log generator, three logs, expected metrics
 tools/                export_rule_table.py (registry -> docs/legal/*.xlsx, *.md)

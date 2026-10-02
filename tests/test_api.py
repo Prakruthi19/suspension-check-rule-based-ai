@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import logging
 
+import pytest
 from app.api import main
 from app.api.main import app
 from fastapi.testclient import TestClient
@@ -82,3 +83,66 @@ def test_logs_never_contain_request_body(caplog):
     text = "\n".join(caplog.messages)
     assert "rules=IL-01" in text
     assert "2026-09-21" not in text and "phone_only" not in text
+
+
+SECRET = "Marcus Johnson pushed my son. Call me at (773) 555-0142."
+
+
+def test_description_redacted_in_response_and_logs(caplog):
+    main._hits.clear()
+    body = load_json(EXAMPLES / "scenario_a_two_day_no_notice.json")
+    body["incident_description"] = SECRET
+    with caplog.at_level(logging.INFO, logger="suspension_check.api"):
+        r = _post(body)
+    assert r.status_code == 200
+    data = r.json()
+    assert "<PERSON>" in data["description"] and "<PHONE>" in data["description"]
+    assert data["redacted"] == ["PERSON", "PHONE_NUMBER"]
+    for leaked in ("Marcus", "Johnson", "555-0142"):
+        assert leaked not in r.text
+        assert leaked not in "\n".join(caplog.messages)
+
+
+def test_check_lists_applicable_letters():
+    main._hits.clear()
+    r = _post(load_json(EXAMPLES / "scenario_b_iep_cumulative_twelve.json"))
+    assert [x["variant"] for x in r.json()["letters"]] == [
+        "review_request",
+        "mdr_request",
+        "records_request",
+    ]
+
+
+@pytest.mark.parametrize(
+    ("fmt", "magic"),
+    [("docx", b"PK"), ("html", b"<!doctype html>"), ("txt", b"September 27, 2026")],
+)
+def test_letter_download(fmt, magic):
+    main._hits.clear()
+    r = client.post(
+        f"/api/letter?variant=mdr_request&format={fmt}&as_of=2026-09-27",
+        content=json.dumps(load_json(EXAMPLES / "scenario_b_iep_cumulative_twelve.json")),
+        headers={"content-type": "application/json"},
+    )
+    assert r.status_code == 200
+    assert r.content.startswith(magic)
+    assert "attachment" in r.headers["content-disposition"]
+
+
+def test_letter_rejects_unknown_variant_and_format():
+    main._hits.clear()
+    body = json.dumps(load_json(EXAMPLES / "scenario_a_two_day_no_notice.json"))
+    h = {"content-type": "application/json"}
+    assert client.post("/api/letter?variant=nope", content=body, headers=h).status_code == 422
+    assert (
+        client.post(
+            "/api/letter?variant=review_request&format=pdf", content=body, headers=h
+        ).status_code
+        == 422
+    )
+
+
+def test_non_json_body_is_rejected():
+    main._hits.clear()
+    r = client.post("/api/check", content=b"not json", headers={"content-type": "application/json"})
+    assert r.status_code == 422
