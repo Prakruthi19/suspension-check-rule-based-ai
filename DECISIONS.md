@@ -123,3 +123,11 @@ keyboard order. The vanilla-HTML page has proven the API shape, so the React
 build in Week 4 is a port, not a redesign. If Week 4 runs short, the vanilla
 page stays as the v1 UI (it already meets the privacy rules); Streamlit is not
 the fallback. To be confirmed with Benjamin at Gate 2.
+
+## 2026-10-03 · Override Presidio's cryptography pin
+CI's `pip-audit` failed on cryptography 48.0.1 (PYSEC-2026-3552/3553/3554,
+fixed in 49.0.0 and 50.0.0). presidio-anonymizer 2.2.364, the latest, pins
+`cryptography<49`. Presidio uses cryptography only for its AES "encrypt"
+operator; this project only uses "replace". A uv `override-dependencies` entry
+forces `cryptography>=50.0.0`. All tests pass and the AES operator still
+round-trips. Remove the override once Presidio lifts the pin.
