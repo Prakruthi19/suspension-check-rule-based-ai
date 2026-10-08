@@ -1,0 +1,23 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ChiEAC//Suspension Check//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Suspension Check deadlines
+BEGIN:VEVENT
+UID:expulsion_hearing-20261002@suspension-check
+DTSTAMP:20260927T000000Z
+DTSTART;VALUE=DATE:20261002
+DTEND;VALUE=DATE:20261003
+SUMMARY:Expulsion hearing
+DESCRIPTION:Clock: no clock\nLaw: 105 ILCS 5/10-22.6(a)\nBring the notice\,
+  any records you received\, and a support person.\nFrom Suspension Check. 
+ Information\, not legal advice. Check every date with the school.
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Expulsion hearing
+TRIGGER:-P2D
+END:VALARM
+END:VEVENT
+END:VCALENDAR

@@ -31,6 +31,12 @@ uv run suspension-check letter examples/scenario_b_iep_cumulative_twelve.json --
 uv run suspension-check letter examples/scenario_c_expulsion_hearing.json --variant expulsion_response --format docx --today 2026-09-27 > expulsion.docx
 ```
 
+Deadlines straight into a phone calendar:
+
+```bash
+uv run suspension-check calendar examples/scenario_b_iep_cumulative_twelve.json --today 2026-09-27 > deadlines.ics
+```
+
 ## 4. The web page (3 minutes)
 
 ```bash
@@ -38,7 +44,7 @@ uv run uvicorn app.api.main:app
 ```
 
 Open http://127.0.0.1:8000, click "IEP, 7 days, 12 days this year", show the
-redacted description, switch between the three letters, and download the Word file.
+redacted description, switch between the three letters, download the Word file, and click "Add 4 upcoming dates to my calendar".
 
 ## Decision to make at Gate 2
 

@@ -23,11 +23,13 @@ from pydantic import ValidationError
 
 from suspension_check import __version__
 from suspension_check.calendar import SchoolCalendar
+from suspension_check.ics import to_ics
 from suspension_check.ingest import ingest
 from suspension_check.letters import TITLES, Variant, applicable, render_text
 from suspension_check.letters.formats import to_docx, to_html
 from suspension_check.report import check
 from suspension_check.rules import evaluate
+from suspension_check.timeline import build_timeline
 
 MAX_BODY_BYTES = 32 * 1024
 RATE_LIMIT = int(
@@ -150,6 +152,18 @@ async def api_check(request: Request, as_of: date | None = None) -> dict:
     result["letter"] = result["letters"][0]["text"]  # Week 2 clients
     request.state.rule_ids = [f["rule_id"] for f in result["flags"]]
     return result
+
+
+@app.post("/api/calendar")
+async def api_calendar(request: Request, as_of: date | None = None) -> Response:
+    """Upcoming deadlines as an .ics download. Built in memory, never stored."""
+    facts = _ingest(await request.body()).facts
+    body = to_ics(build_timeline(facts, CALENDAR), as_of or date.today())
+    return Response(
+        content=body,
+        media_type="text/calendar; charset=utf-8",
+        headers={"Content-Disposition": 'attachment; filename="suspension-deadlines.ics"'},
+    )
 
 
 _FORMATS = {

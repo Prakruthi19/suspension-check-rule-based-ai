@@ -131,3 +131,14 @@ fixed in 49.0.0 and 50.0.0). presidio-anonymizer 2.2.364, the latest, pins
 operator; this project only uses "replace". A uv `override-dependencies` entry
 forces `cryptography>=50.0.0`. All tests pass and the AES operator still
 round-trips. Remove the override once Presidio lifts the pin.
+
+## 2026-10-08 · Deadline calendar export (.ics)
+Parents miss deadlines they never wrote down. The timeline now exports as an
+iCalendar file: one all-day event per deadline on or after today, each with a
+reminder two days before. Passed deadlines are left out. The file holds only
+rule titles, clocks, and citations, never facts about the student, so it is
+safe to sync to a phone or a shared family calendar. Output is deterministic
+(DTSTAMP is "today", UIDs come from the obligation id and date), so it has
+goldens like the letters. Hand-written (about 90 lines) rather than adding a
+dependency; the tests check RFC 5545 line folding, and a standard parser
+accepts the output.
