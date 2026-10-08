@@ -146,3 +146,23 @@ def test_non_json_body_is_rejected():
     main._hits.clear()
     r = client.post("/api/check", content=b"not json", headers={"content-type": "application/json"})
     assert r.status_code == 422
+
+
+def test_calendar_download():
+    main._hits.clear()
+    r = client.post(
+        "/api/calendar?as_of=2026-09-27",
+        content=json.dumps(load_json(EXAMPLES / "scenario_b_iep_cumulative_twelve.json")),
+        headers={"content-type": "application/json"},
+    )
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/calendar")
+    assert "attachment" in r.headers["content-disposition"]
+    assert r.text.startswith("BEGIN:VCALENDAR")
+    assert "DTSTART;VALUE=DATE:20261006" in r.text
+
+
+def test_calendar_rejects_invalid_facts():
+    main._hits.clear()
+    r = client.post("/api/calendar", content="{}", headers={"content-type": "application/json"})
+    assert r.status_code == 422

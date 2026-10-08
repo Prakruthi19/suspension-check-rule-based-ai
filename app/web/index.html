@@ -318,10 +318,13 @@ const REDACTED = { PERSON: "names", PHONE_NUMBER: "phone numbers", EMAIL_ADDRESS
   STREET_ADDRESS: "street addresses", STUDENT_ID: "student ID numbers", US_SSN: "Social Security numbers" };
 let lastBody = null, lastQs = "";
 async function download(variant, format) {
-  const res = await fetch(`/api/letter?variant=${variant}&format=${format}` + (lastQs ? "&" + lastQs.slice(1) : ""),
-    { method: "POST", headers: { "content-type": "application/json" }, body: lastBody });
+  return fetchFile(`/api/letter?variant=${variant}&format=${format}` + (lastQs ? "&" + lastQs.slice(1) : ""),
+    `${variant}.${format}`);
+}
+async function fetchFile(url, name) {
+  const res = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: lastBody });
   if (!res.ok) { document.getElementById("form-error").textContent = "Could not build the file."; return; }
-  const a = el("a", { href: URL.createObjectURL(await res.blob()), download: `${variant}.${format}` });
+  const a = el("a", { href: URL.createObjectURL(await res.blob()), download: name });
   document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);
 }
 const fmt = iso => iso ? new Date(iso + "T12:00:00").toLocaleDateString("en-US",
@@ -352,10 +355,15 @@ function render(r) {
     tbody.append(el("tr", {}, el("td", { class: "due" }, fmt(r.records_due_if_requested_today),
       el("span", { class: "status" }, "if you ask today")), el("td", {}, "Records due if you request them today"),
       el("td", {}, "15 school days"), el("td", {}, "105 ILCS 10/5 (ISSRA)")));
+  const ahead = r.timeline.filter(o => o.status === "upcoming" || o.status === "today").length;
+  const ics = el("button", { type: "button" }, `Add ${ahead} upcoming ${ahead === 1 ? "date" : "dates"} to my calendar (.ics)`);
+  ics.addEventListener("click", () => fetchFile("/api/calendar" + lastQs, "suspension-deadlines.ics"));
   results.append(el("section", { class: "card" }, el("h2", {}, "Timeline"),
     el("div", { class: "table-wrap" }, el("table", {},
       el("thead", {}, el("tr", {}, el("th", {}, "When"), el("th", {}, "What"), el("th", {}, "Clock"),
-        el("th", {}, "Law"))), tbody))));
+        el("th", {}, "Law"))), tbody)),
+    ahead ? el("div", { class: "row" }, ics,
+      el("span", { class: "hint" }, "Works with phone, Google and Outlook calendars. Each date gets a reminder two days before.")) : ""));
 
   const flags = el("section", { class: "card" }, el("h2", {}, "Flags"));
   for (const f of r.flags) {

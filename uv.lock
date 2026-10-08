@@ -2246,7 +2246,7 @@ wheels = [
 
 [[package]]
 name = "suspension-check-rule-based-ai"
-version = "0.2.0a1"
+version = "0.3.0a1"
 source = { editable = "." }
 dependencies = [
     { name = "jinja2" },

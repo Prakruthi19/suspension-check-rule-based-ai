@@ -1,6 +1,6 @@
 """Command-line entry points.
 
-``suspension-check check``, ``letter``, ``redact``, and ``rules``. Output goes to
+``suspension-check check``, ``letter``, ``calendar``, ``redact``, and ``rules``. Output goes to
 stdout only; the CLI never writes files (redirect if you want one).
 """
 
@@ -93,6 +93,20 @@ def _cmd_letter(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_calendar(args: argparse.Namespace) -> int:
+    from suspension_check.ics import to_ics
+    from suspension_check.timeline import build_timeline
+
+    try:
+        facts = _load_facts(args.facts)
+    except (ValidationError, ValueError) as exc:
+        print(f"Invalid facts file: {exc}", file=sys.stderr)
+        return 2
+    today = date.fromisoformat(args.today) if args.today else date.today()
+    sys.stdout.write(to_ics(build_timeline(facts, SchoolCalendar.default()), today))
+    return 0
+
+
 def _cmd_redact(args: argparse.Namespace) -> int:
     from suspension_check.redact import redact
 
@@ -128,6 +142,13 @@ def main(argv: list[str] | None = None) -> int:
     lt.add_argument("--format", choices=["txt", "html", "docx"], default="txt")
     lt.add_argument("--today", help="Date the letter (YYYY-MM-DD).")
     lt.set_defaults(func=_cmd_letter)
+
+    ca = sub.add_parser(
+        "calendar", help="Print upcoming deadlines as an .ics calendar file to stdout."
+    )
+    ca.add_argument("facts")
+    ca.add_argument("--today", help="Only deadlines on or after this date (YYYY-MM-DD).")
+    ca.set_defaults(func=_cmd_calendar)
 
     rd = sub.add_parser(
         "redact", help="Show what redaction removes from a piece of text (- for stdin)."

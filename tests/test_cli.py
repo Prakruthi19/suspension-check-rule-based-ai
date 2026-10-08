@@ -107,3 +107,18 @@ def test_redact_command(capsys):
     main(["redact", "Call Marcus Johnson at (773) 555-0142."])
     out = capsys.readouterr().out
     assert "Marcus" not in out and "<PHONE>" in out
+
+
+def test_calendar_command(capsys):
+    path = str(EXAMPLES / "scenario_b_iep_cumulative_twelve.json")
+    assert main(["calendar", path, "--today", "2026-09-27"]) == 0
+    out = capsys.readouterr().out
+    assert out.startswith("BEGIN:VCALENDAR")
+    assert "DTSTART;VALUE=DATE:20261006" in out  # the MDR deadline
+
+
+def test_calendar_rejects_bad_facts(tmp_path, capsys):
+    bad = tmp_path / "bad.json"
+    bad.write_text("{}", encoding="utf-8")
+    assert main(["calendar", str(bad)]) == 2
+    assert "Invalid facts file" in capsys.readouterr().err

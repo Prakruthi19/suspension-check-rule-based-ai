@@ -1,0 +1,72 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ChiEAC//Suspension Check//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Suspension Check deadlines
+BEGIN:VEVENT
+UID:tenth_day-20260929@suspension-check
+DTSTAMP:20260927T000000Z
+DTSTART;VALUE=DATE:20260929
+DTEND;VALUE=DATE:20260930
+SUMMARY:10th cumulative school day removed this year\; services must contin
+ ue after it
+DESCRIPTION:Clock: 5 school days\nLaw: 34 CFR 300.530(d)\nFrom Suspension C
+ heck. Information\, not legal advice. Check every date with the school.
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:10th cumulative school day removed this year\; services must co
+ ntinue after it
+TRIGGER:-P2D
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:last_day-20261001@suspension-check
+DTSTAMP:20260927T000000Z
+DTSTART;VALUE=DATE:20261001
+DTEND;VALUE=DATE:20261002
+SUMMARY:Last day of the 7-school-day suspension
+DESCRIPTION:Clock: 7 school days\nLaw: 105 ILCS 5/10-22.6(b)\nFrom Suspensi
+ on Check. Information\, not legal advice. Check every date with the school
+ .
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Last day of the 7-school-day suspension
+TRIGGER:-P2D
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:return-20261002@suspension-check
+DTSTAMP:20260927T000000Z
+DTSTART;VALUE=DATE:20261002
+DTEND;VALUE=DATE:20261003
+SUMMARY:Expected return to school\; make-up work for equivalent credit
+DESCRIPTION:Clock: 1 school day\nLaw: 105 ILCS 5/10-22.6(b-30)\nFrom Suspen
+ sion Check. Information\, not legal advice. Check every date with the scho
+ ol.
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Expected return to school\; make-up work for equivalent credit
+TRIGGER:-P2D
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:mdr-20261006@suspension-check
+DTSTAMP:20260927T000000Z
+DTSTART;VALUE=DATE:20261006
+DTEND;VALUE=DATE:20261007
+SUMMARY:Manifestation determination review must be held
+DESCRIPTION:Clock: 10 school days\nLaw: 34 CFR 300.530(e)\nPossible change 
+ of placement (pattern of removals).\nFrom Suspension Check. Information\, 
+ not legal advice. Check every date with the school.
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Manifestation determination review must be held
+TRIGGER:-P2D
+END:VALARM
+END:VEVENT
+END:VCALENDAR

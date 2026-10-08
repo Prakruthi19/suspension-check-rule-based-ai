@@ -1,6 +1,6 @@
 [project]
 name = "suspension-check-rule-based-ai"
-version = "0.2.0a1"
+version = "0.3.0a1"
 description = "An explainable, unit-tested rules engine for school discipline due process (Illinois and federal IDEA / Section 504)."
 readme = "README.md"
 license = { text = "Apache-2.0" }

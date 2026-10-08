@@ -22,7 +22,7 @@ in the decision path.
 
 ![Family Check on synthetic facts](docs/screenshot_family_check.png)
 
-## Status (alpha, end of build week 3, v0.2.0-alpha)
+## Status (alpha, build week 4, v0.3.0-alpha)
 
 | Area | State |
 |---|---|
@@ -30,8 +30,9 @@ in the decision path.
 | Facts models, rule registry, three-valued evaluation | Done |
 | School calendar (weekends, closures, JSON and .ics import) | Done. Bundled CPS 2026-27 calendar is **provisional** |
 | Timeline state machine (main track + IDEA track) | Done |
-| CLI: `check`, `letter`, `redact`, `rules` | Done |
-| Tests: rule fixtures, property tests, letter goldens, adversarial redaction, no-persistence check | Done: 300 tests, 97% coverage |
+| CLI: `check`, `letter`, `calendar`, `redact`, `rules` | Done |
+| Deadline calendar export (.ics, reminder two days before each date) | Done: CLI, API, and web button |
+| Tests: rule fixtures, property tests, letter goldens, adversarial redaction, no-persistence check | Done: 316 tests, 97% coverage |
 | Synthetic discipline logs with expected metrics | Done, `synthetic/` |
 | Redaction on ingest (Presidio + custom recognizers) for the incident description | Done; 22 adversarial fixtures |
 | Four letters (review, MDR, records, expulsion) as text, printable HTML, and DOCX | Done; goldens for every scenario |
@@ -53,6 +54,7 @@ uv run pytest                       # full suite with coverage gate
 uv run suspension-check rules                # list every rule and its review status
 uv run suspension-check check examples/scenario_b_iep_cumulative_twelve.json --today 2026-09-27
 uv run suspension-check letter examples/scenario_b_iep_cumulative_twelve.json --variant mdr_request
+uv run suspension-check calendar examples/scenario_b_iep_cumulative_twelve.json --today 2026-09-27 > deadlines.ics
 uv run suspension-check redact "Call Marcus Johnson at (773) 555-0142"
 ```
 
