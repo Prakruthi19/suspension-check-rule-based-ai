@@ -46,6 +46,17 @@ uv run uvicorn app.api.main:app
 Open http://127.0.0.1:8000, click "IEP, 7 days, 12 days this year", show the
 redacted description, switch between the three letters, download the Word file, and click "Add 4 upcoming dates to my calendar".
 
+## 5. Pattern Check (3 minutes)
+
+```bash
+uv run suspension-check pattern synthetic/school_a.csv
+```
+
+Then open http://127.0.0.1:8000/pattern, click "Elementary school (CSV)", point
+out that "Student Name" is dropped and "Student ID" is scrambled, click "See the
+patterns", show that the white group is suppressed (fewer than 10 students) so
+risk ratios use all other students, and open the one-page LSC brief.
+
 ## Decision to make at Gate 2
 
 Front end for v1: the recommendation is React + Vite (see DECISIONS.md, 2026-10-02).

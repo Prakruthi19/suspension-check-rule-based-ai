@@ -213,3 +213,15 @@ from fixed thresholds (risk ratio 2.0, documented interventions under 50%,
 subjective share 50% and 15 points above the lowest group, repeat share 25%,
 composition index 1.5), listed in `lsc_brief.THRESHOLDS`. There are always
 exactly three questions: from findings first, then general ones.
+
+## 2026-10-22 · Zip bomb guard for XLSX uploads
+A 2 MB workbook can unpack to gigabytes. The zip directory is checked before
+openpyxl opens it, and a workbook that would unpack past 40 MB is refused.
+Found while writing the threat model.
+
+## 2026-10-23 · v0.4.0-alpha and handoff
+Release covering Week 4 (privacy, hardening, accessibility, Docker) and Week 5
+(Pattern Check and the LSC brief), plus the parts of Week 6 that need no other
+people: threat model and pip-audit clean. Legal review, usability sessions, and
+the public deployment need ChiEAC and are first in docs/STATUS.md. HANDOFF.md
+written early because the original developer leaves at the end of October.

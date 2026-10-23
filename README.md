@@ -22,7 +22,7 @@ in the decision path.
 
 ![Family Check on synthetic facts](docs/screenshot_family_check.png)
 
-## Status (alpha, build week 4, v0.3.0-alpha)
+## Status (alpha, build week 6, v0.4.0-alpha)
 
 | Area | State |
 |---|---|
@@ -32,7 +32,7 @@ in the decision path.
 | Timeline state machine (main track + IDEA track) | Done |
 | CLI: `check`, `letter`, `calendar`, `pattern`, `redact`, `rules` | Done |
 | Deadline calendar export (.ics, reminder two days before each date) | Done: CLI, API, and web button |
-| Tests: rule fixtures, property tests, letter goldens, adversarial redaction, no-persistence check | Done: 365 tests, 96% coverage |
+| Tests: rule fixtures, property tests, letter goldens, adversarial redaction, no-persistence check | Done: 366 tests, 96% coverage |
 | Synthetic discipline logs with expected metrics | Done, `synthetic/` |
 | Redaction on ingest (Presidio + custom recognizers) for the incident description | Done; 22 adversarial fixtures |
 | Four letters (review, MDR, records, expulsion) as text, printable HTML, and DOCX | Done; goldens for every scenario |
