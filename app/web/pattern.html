@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pattern Check (alpha)</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 rx=%273%27 fill=%27%231f5f8b%27/%3E%3Cpath d=%27M4 8.5l2.5 2.5L12 5%27 stroke=%27white%27 stroke-width=%272%27 fill=%27none%27/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #f7f6f2; --panel: #ffffff; --ink: #1d232b; --muted: #5b6573; --line: #d9dce1;
+    --accent: #1f5f8b; --accent-ink: #ffffff;
+    --assert: #a4282b; --assert-bg: #fbeaea; --ask: #8a5a00; --ask-bg: #fdf3e0;
+    --info: #25606f; --info-bg: #e6f2f4; --focus: #f2b705;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171b; --panel: #1d2127; --ink: #e8eaed; --muted: #a0a8b3; --line: #343a42;
+      --accent: #6aaed8; --accent-ink: #0d1116;
+      --assert: #f08a8c; --assert-bg: #3a1f21; --ask: #f0c060; --ask-bg: #372c16;
+      --info: #7cc7d6; --info-bg: #17303a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header, main, footer { max-width: 920px; margin: 0 auto; padding: 0 16px; }
+  header { padding-top: 28px; }
+  h1 { margin: 0 0 4px; font-size: 1.7rem; }
+  .tag { display: inline-block; font-size: .75rem; font-weight: 600; letter-spacing: .03em;
+    padding: 2px 8px; border-radius: 999px; background: var(--ask-bg); color: var(--ask);
+    vertical-align: middle; margin-left: 8px; }
+  .lede { color: var(--muted); margin: 0 0 16px; max-width: 60ch; }
+  .banner { border: 1px solid var(--line); background: var(--panel); border-radius: 8px;
+    padding: 10px 14px; font-size: .92rem; color: var(--muted); }
+  .examples { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; align-items: center; }
+  .examples span { color: var(--muted); font-size: .9rem; }
+  button { font: inherit; cursor: pointer; border-radius: 6px; border: 1px solid var(--line);
+    background: var(--panel); color: var(--ink); padding: 6px 12px; }
+  button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 -3px 0 var(--accent); font-weight: 600; }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent);
+    padding: 10px 20px; font-weight: 600; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  form { display: grid; gap: 16px; }
+  fieldset { border: 1px solid var(--line); border-radius: 8px; background: var(--panel);
+    padding: 14px 16px 16px; margin: 0; }
+  legend { font-weight: 700; padding: 0 6px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 16px; }
+  label { display: block; font-size: .92rem; }
+  label > span { display: block; font-weight: 600; margin-bottom: 4px; }
+  input[type=date], input[type=number], select { width: 100%; font: inherit; padding: 6px 8px;
+    border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
+  .checks label { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; margin: 4px 0; }
+  .tri { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: center; }
+  .tri select { width: auto; }
+  .hint { color: var(--muted); font-size: .85rem; margin: 4px 0 0; }
+  [hidden] { display: none !important; }
+  #results { margin: 28px 0; display: grid; gap: 20px; }
+  #results > *, form > * { min-width: 0; }
+  a { color: var(--accent); overflow-wrap: anywhere; }
+  section.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+  section.card h2 { margin: 0 0 10px; font-size: 1.2rem; }
+  .summary { display: flex; gap: 12px; flex-wrap: wrap; }
+  .pill { border-radius: 6px; padding: 6px 10px; font-weight: 600; }
+  .sev-assert { background: var(--assert-bg); color: var(--assert); }
+  .sev-ask { background: var(--ask-bg); color: var(--ask); }
+  .sev-information { background: var(--info-bg); color: var(--info); }
+  table { width: 100%; border-collapse: collapse; font-size: .93rem; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  td.due { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .status { font-size: .8rem; color: var(--muted); display: block; }
+  .status.upcoming, .status.today { color: var(--ask); font-weight: 600; }
+  .table-wrap { overflow-x: auto; }
+  .flag { border-left: 4px solid var(--line); padding: 10px 12px; margin: 10px 0;
+    background: var(--bg); border-radius: 0 6px 6px 0; }
+  .flag.sev-assert { border-color: var(--assert); background: var(--bg); color: var(--ink); }
+  .flag.sev-ask { border-color: var(--ask); background: var(--bg); color: var(--ink); }
+  .flag.sev-information { border-color: var(--info); background: var(--bg); color: var(--ink); }
+  .flag-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: .82rem; }
+  .flag-head .sev { font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
+  .flag-head .rid { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); }
+  .pending { color: var(--muted); border: 1px dashed var(--line); border-radius: 4px; padding: 0 6px; }
+  .flag p { margin: 6px 0; }
+  .flag .action { font-weight: 600; }
+  details { font-size: .88rem; color: var(--muted); }
+  blockquote { margin: 6px 0; padding-left: 10px; border-left: 2px solid var(--line); }
+  pre.letter { white-space: pre-wrap; font: .93rem/1.55 Georgia, "Times New Roman", serif;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 16px; margin: 0; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  ul.resources { padding-left: 18px; margin: 0; }
+  footer { color: var(--muted); font-size: .85rem; padding-bottom: 40px; }
+  .error { color: var(--assert); font-weight: 600; }
+  .fields { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 8px 16px; align-items: center; }
+  .fields .h { font-weight: 600; overflow-wrap: anywhere; }
+  .enr { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px 16px; }
+  input[type=text] { width: 100%; font: inherit; padding: 6px 8px; border: 1px solid var(--line);
+    border-radius: 6px; background: var(--bg); color: var(--ink); }
+  input[type=file] { font: inherit; max-width: 100%; }
+  ol.questions li { font-weight: 600; margin-bottom: 8px; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  nav.top { margin: 0 0 12px; font-size: .92rem; }
+</style>
+</head>
+<body>
+<header>
+  <nav class="top"><a href="/">Family Check</a> · <strong>Pattern Check</strong></nav>
+  <h1>Pattern Check <span class="tag">ALPHA · SYNTHETIC DATA ONLY</span></h1>
+  <p class="lede">For Local School Councils, parent groups and reporters. Upload a school's discipline
+    log (CSV or Excel) and see who is suspended, how often, and for what, with three questions to
+    bring to the principal.</p>
+  <p class="banner">Nothing you upload is saved. Name columns are dropped and student IDs are scrambled
+    before anything is counted. Any group with fewer than 10 students is never shown, so no child can be
+    identified.</p>
+</header>
+
+<main>
+  <section class="card" aria-labelledby="s1">
+    <h2 id="s1">1. Choose a discipline log</h2>
+    <div class="row">
+      <label for="file"><span>Your file (CSV or .xlsx, up to 2 MB)</span>
+        <input type="file" id="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></label>
+    </div>
+    <div class="examples" role="group" aria-label="Try a synthetic log">
+      <span>Or try a synthetic log:</span>
+      <button type="button" data-sample="school_a">Elementary school (CSV)</button>
+      <button type="button" data-sample="school_b">High school (Excel)</button>
+      <button type="button" data-sample="school_c">Small school (CSV)</button>
+    </div>
+    <p id="err" class="error" role="alert"></p>
+  </section>
+
+  <section class="card" id="step2" aria-labelledby="s2" hidden>
+    <h2 id="s2" tabindex="-1">2. Check the columns</h2>
+    <p class="hint">We matched each column in your file to what Pattern Check needs. Fix any that are wrong.
+      Columns marked "Ignore" are never read.</p>
+    <div class="fields" id="fields"></div>
+    <h3>Enrollment by race and ethnicity (optional)</h3>
+    <p class="hint">Needed for rates and risk ratios. Copy the numbers from the school's page on the
+      <a href="https://www.illinoisreportcard.com/" target="_blank" rel="noopener">Illinois Report Card</a>.</p>
+    <div class="enr" id="enr"></div>
+    <label for="title"><span>Title for the brief (optional)</span>
+      <input type="text" id="title" maxlength="100" placeholder="Suspension patterns at our school"></label>
+    <div class="row" style="margin-top:12px"><button type="button" class="primary" id="go">See the patterns</button></div>
+  </section>
+
+  <div id="results" aria-live="polite"></div>
+</main>
+
+<footer>
+  <p>Pattern Check is part of Suspension Check, an open-source project of the Chicago Education Advocacy
+    Cooperative. Metric definitions: docs/metrics.md in the repository.</p>
+</footer>
+
+<script>
+const FIELDS = { "": "Ignore", incident_date: "Incident date", action_type: "Action (OSS, ISS...)",
+  days_assigned: "Days assigned", grade: "Grade", incident_category: "Incident category",
+  race_ethnicity: "Race / ethnicity", gender: "Gender", iep: "IEP", el: "English learner",
+  low_income: "Low income", interventions_documented: "Interventions documented",
+  student_id: "Student ID (scrambled)", name: "Name (dropped)" };
+const RACES = ["Black", "Hispanic", "White", "Asian", "Two or More Races",
+  "American Indian or Alaska Native", "Native Hawaiian or Pacific Islander"];
+const SAMPLE_ENROLLMENT = {
+  school_a: { Black: 240, Hispanic: 200, White: 120, Asian: 30, "Two or More Races": 10 },
+  school_b: { Black: 400, Hispanic: 500, White: 300, Asian: 60 },
+  school_c: { Black: 45, Hispanic: 30, White: 8 } };
+const DIM_TITLE = { race_ethnicity: "Race and ethnicity", gender: "Gender", iep: "IEP",
+  el: "English learners", low_income: "Low income" };
+const el = (tag, attrs = {}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) k === "class" ? n.className = v : n.setAttribute(k, v);
+  for (const k of kids) n.append(k);
+  return n;
+};
+const err = document.getElementById("err"), results = document.getElementById("results");
+let file = null, fileName = "", headers = [];
+
+async function post(url, params = {}) {
+  const qs = new URLSearchParams({ filename: fileName, ...params });
+  const res = await fetch(url + "?" + qs, { method: "POST",
+    headers: { "content-type": "application/octet-stream" }, body: file });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error((body.detail && body.detail.error) || body.error || "Could not read this file.");
+  }
+  return res;
+}
+
+async function load(blob, name, enrollment) {
+  err.textContent = ""; results.replaceChildren();
+  file = blob; fileName = name;
+  try {
+    const m = await (await post("/api/pattern/map")).json();
+    headers = m.headers;
+    const box = document.getElementById("fields");
+    box.replaceChildren();
+    m.headers.forEach((h, i) => {
+      const sel = el("select", { id: "map" + i, "data-header": h });
+      for (const [v, t] of Object.entries(FIELDS)) sel.append(el("option", { value: v }, t));
+      sel.value = m.mapping[h] || "";
+      box.append(el("label", { for: "map" + i, class: "h" }, h), sel);
+    });
+    const enr = document.getElementById("enr");
+    enr.replaceChildren();
+    RACES.forEach((r, i) => enr.append(el("label", { for: "enr" + i }, el("span", {}, r),
+      el("input", { type: "number", min: "0", step: "1", id: "enr" + i, "data-group": r,
+        value: enrollment && enrollment[r] != null ? enrollment[r] : "" }))));
+    document.getElementById("step2").hidden = false;
+    document.getElementById("s2").focus();
+  } catch (e) { err.textContent = e.message; }
+}
+
+document.getElementById("file").addEventListener("change", e => {
+  const f = e.target.files[0];
+  if (f) load(f, f.name, null);
+});
+document.querySelectorAll("[data-sample]").forEach(b => b.addEventListener("click", async () => {
+  const name = b.dataset.sample;
+  const res = await fetch("/api/pattern/sample/" + name);
+  if (!res.ok) { err.textContent = "The synthetic logs are not available on this server."; return; }
+  const ext = name === "school_b" ? "xlsx" : "csv";
+  load(await res.blob(), name + "." + ext, SAMPLE_ENROLLMENT[name]);
+}));
+
+function params() {
+  const mapping = {};
+  document.querySelectorAll("#fields select").forEach(s => mapping[s.dataset.header] = s.value || null);
+  const race = {};
+  document.querySelectorAll("#enr input").forEach(i => { if (i.value) race[i.dataset.group] = Number(i.value); });
+  const p = { mapping: JSON.stringify(mapping) };
+  if (Object.keys(race).length) p.enrollment = JSON.stringify({ race_ethnicity: race });
+  const t = document.getElementById("title").value.trim();
+  if (t) p.title = t;
+  return p;
+}
+
+const show = v => v === null || v === undefined ? "–" : String(v);
+function render(r) {
+  results.replaceChildren();
+  results.append(el("section", { class: "card" },
+    el("h2", { tabindex: "-1", id: "results-head" }, "What the log shows"),
+    el("p", {}, `${r.oss_incidents} out-of-school suspensions counted; ${r.iss_rows_ignored} other rows (such as in-school suspensions) left out.`),
+    ...r.warnings.map(w => el("p", { class: "hint" }, w)),
+    el("p", { class: "hint" }, "“<10” means fewer than 10 students: too few to show without risking identifying a child, so no rate is computed. A dash means the number could not be computed (too small, or enrollment not entered).")));
+
+  for (const [dim, title] of Object.entries(DIM_TITLE)) {
+    const stats = r["by_" + dim];
+    if (!stats) continue;
+    const tbody = el("tbody");
+    for (const [g, m] of Object.entries(stats))
+      tbody.append(el("tr", {}, el("th", { scope: "row" }, g),
+        ...[m.students_suspended, m.students_suspended_per_100, m.days_lost_per_100, m.risk_ratio,
+          m.composition_index, m.subjective_share, m.repeat_share].map(v => el("td", { class: "num" }, show(v)))));
+    results.append(el("section", { class: "card" }, el("h2", {}, title),
+      el("div", { class: "table-wrap" }, el("table", {},
+        el("thead", {}, el("tr", {}, el("th", { scope: "col" }, "Group"),
+          ...["Students suspended", "Per 100 students", "Days lost per 100", "Risk ratio",
+            "Composition index", "Subjective share", "Repeat share"].map(t => el("th", { scope: "col", class: "num" }, t)))),
+        tbody))));
+  }
+  const months = Object.entries(r.monthly);
+  if (months.length)
+    results.append(el("section", { class: "card" }, el("h2", {}, "By month"),
+      el("div", { class: "table-wrap" }, el("table", {},
+        el("thead", {}, el("tr", {}, el("th", { scope: "col" }, "Month"), el("th", { scope: "col", class: "num" }, "Suspensions"))),
+        el("tbody", {}, ...months.map(([k, v]) => el("tr", {}, el("td", {}, k), el("td", { class: "num" }, show(v)))))))));
+
+  const brief = el("button", { type: "button", class: "primary" }, "Open the one-page LSC brief");
+  brief.addEventListener("click", async () => {
+    try {
+      const res = await post("/api/pattern/brief", params());
+      const url = URL.createObjectURL(await res.blob());
+      const a = el("a", { href: url, download: "lsc-brief.html" });
+      document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    } catch (e) { err.textContent = e.message; }
+  });
+  results.append(el("section", { class: "card" }, el("h2", {}, "For the next LSC meeting"),
+    el("ul", {}, ...(r.findings.length ? r.findings : ["No finding crossed a threshold, or the groups were too small to report."]).map(f => el("li", {}, f))),
+    el("h3", {}, "Three questions for the principal"),
+    el("ol", { class: "questions" }, ...r.questions.map(q => el("li", {}, q))),
+    el("div", { class: "row" }, brief),
+    el("p", { class: "hint" }, "The brief downloads as a web page. Open it and print, or choose “Save as PDF”.")));
+  document.getElementById("results-head").focus();
+}
+
+document.getElementById("go").addEventListener("click", async () => {
+  err.textContent = "";
+  try { render(await (await post("/api/pattern", params())).json()); }
+  catch (e) { err.textContent = e.message; results.replaceChildren(); }
+});
+</script>
+</body>
+</html>

@@ -10,6 +10,7 @@ WORKDIR /srv
 COPY pyproject.toml uv.lock README.md LICENSE ./
 COPY src ./src
 COPY app ./app
+COPY synthetic/*.csv synthetic/*.xlsx ./synthetic/
 RUN uv sync --frozen --no-dev --extra api --extra pattern \
     && rm -rf /root/.cache
 

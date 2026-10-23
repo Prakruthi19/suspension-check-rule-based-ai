@@ -16,9 +16,16 @@ src/suspension_check/
   redact.py           Presidio + custom recognizers; typed placeholders (<PERSON>, <PHONE>...)
   letters/            four Jinja2 text templates; formats.py renders HTML and DOCX in memory
   report.py           check(): rules + timeline + disclaimer + resource card as plain data
-  cli.py              suspension-check check / letter / redact / rules
-app/api/main.py       stateless FastAPI service (POST /api/check, POST /api/letter)
+  ics.py              upcoming deadlines as an iCalendar file
+  disparity.py        Pattern Check: read CSV/XLSX, map headers, drop names, hash IDs,
+                      Appendix E metrics with small-cell suppression
+  lsc_brief.py        findings over fixed thresholds, three questions, one-page HTML brief
+  cli.py              suspension-check check / letter / calendar / pattern / redact / rules
+app/api/main.py       stateless FastAPI service (check, letter, calendar, pattern/map,
+                      pattern, pattern/brief)
 app/web/index.html    Family Check page (no build step)
+app/web/pattern.html  Pattern Check page: upload, confirm mapping, enrollment, results
+Dockerfile            non-root, read-only-friendly image (see docs/deploy.md)
 synthetic/            Faker-based discipline log generator, three logs, expected metrics
 tools/                export_rule_table.py (registry -> docs/legal/*.xlsx, *.md)
 ```

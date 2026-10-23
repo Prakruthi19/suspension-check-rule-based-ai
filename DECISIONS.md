@@ -192,3 +192,24 @@ authoritative and be wrong.
 0.4 for Black students, but log B has no interventions column, so the share
 cannot be measured. The generator now reports it only when the log has the
 field. The data files are unchanged.
+
+## 2026-10-19 · Pattern Check API: map first, then analyse
+Two stateless calls. `/api/pattern/map` returns the headers and the proposed
+mapping (never a cell value) so the user can confirm or correct it; the browser
+keeps the file and sends it again with the confirmed mapping to `/api/pattern`.
+Nothing is held between the calls. Uploads are raw request bodies (no
+multipart dependency), capped at 2 MB for `/api/pattern*` and 32 KB elsewhere.
+
+## 2026-10-20 · Charts cut; tables and the LSC brief kept
+The brief's cut list allows dropping Pattern Check charts but keeping the tables
+and the LSC brief. Tables are accessible by default and print cleanly. Charts
+go to the backlog.
+
+## 2026-10-21 · LSC brief as a printable page, not a server-side PDF
+The brief is one HTML page sized for US Letter; "Save as PDF" in any browser
+gives the PDF (checked: one page for each synthetic log). A PDF library would
+add a large dependency for no gain in what the LSC member sees. Findings come
+from fixed thresholds (risk ratio 2.0, documented interventions under 50%,
+subjective share 50% and 15 points above the lowest group, repeat share 25%,
+composition index 1.5), listed in `lsc_brief.THRESHOLDS`. There are always
+exactly three questions: from findings first, then general ones.
