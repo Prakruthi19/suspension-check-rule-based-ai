@@ -47,6 +47,7 @@ SUPPRESS_BELOW = 10
 MAX_BYTES = 2 * 1024 * 1024
 MAX_ROWS = 20_000
 MAX_COLUMNS = 60
+MAX_XLSX_UNPACKED = 40 * 1024 * 1024  # a 2 MB workbook that unpacks past this is a zip bomb
 OTHER = "Other or unlisted"
 
 # Appendix D: standard field -> aliases (compared after normalisation).
@@ -159,6 +160,15 @@ def _read_xlsx(raw: bytes) -> tuple[list[str], list[list[object]]]:
         from openpyxl import load_workbook
     except ImportError as exc:  # pragma: no cover - depends on the install
         raise PatternError("XLSX support needs the 'pattern' extra (openpyxl).") from exc
+    import zipfile
+
+    try:
+        with zipfile.ZipFile(io.BytesIO(raw)) as z:
+            unpacked = sum(i.file_size for i in z.infolist())
+    except zipfile.BadZipFile as exc:
+        raise PatternError("The file is not a readable XLSX workbook.") from exc
+    if unpacked > MAX_XLSX_UNPACKED:
+        raise PatternError("The workbook is too large once unpacked.")
     try:
         # read_only streams rows; data_only reads cached values, never formulas.
         wb = load_workbook(io.BytesIO(raw), read_only=True, data_only=True)

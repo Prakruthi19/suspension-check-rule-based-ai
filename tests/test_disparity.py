@@ -251,3 +251,10 @@ def test_not_a_workbook():
 def test_empty_file():
     with pytest.raises(PatternError, match="no header"):
         analyze(b"", "x.csv")
+
+
+def test_xlsx_zip_bomb_is_refused(monkeypatch):
+    monkeypatch.setattr(disparity, "MAX_XLSX_UNPACKED", 1000)
+    raw = (SYN / "school_b.xlsx").read_bytes()
+    with pytest.raises(PatternError, match="too large once unpacked"):
+        analyze(raw, "school_b.xlsx")

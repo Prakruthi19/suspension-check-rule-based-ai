@@ -39,6 +39,7 @@ def test_security_headers():
         "content-security-policy",
         "x-content-type-options",
         "referrer-policy",
+        "x-frame-options",
     ):
         assert h in r.headers
     assert r.headers["cache-control"] == "no-store"

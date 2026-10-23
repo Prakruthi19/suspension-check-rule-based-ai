@@ -1,6 +1,6 @@
 # Status and next steps
 
-As of 2026-10-08, about 65 hours in (three weeks at 20 hours, plus a small Week 4 feature). Current release: v0.3.0-alpha.
+As of 2026-10-23, about 136 hours in (20 hours a week since September 14). Current release: v0.4.0-alpha.
 
 ## Done
 
@@ -10,7 +10,7 @@ As of 2026-10-08, about 65 hours in (three weeks at 20 hours, plus a small Week 
 - Deadline table v1 with the unit of every clock. `docs/legal/deadlines_v1.xlsx`
 - Family Check survey draft and Pattern Check schema. `docs/survey_v1.md`, `docs/schema_v1.md`
 - Engine: facts, rules, calendar, timeline, report, CLI
-- Tests: 316 tests, 97% coverage, Hypothesis property tests, adversarial redaction, letter goldens, no-persistence check
+- Tests: 366 tests, 96% coverage, Hypothesis property tests, adversarial redaction, letter goldens, no-persistence check
 - Three synthetic discipline logs (CSV and XLSX) with expected metrics
 - Week 3: redaction on ingest (`redact.py`, `ingest.py`) with 22 adversarial fixtures
 - Week 3: four letters (review request, manifestation determination request,
@@ -21,18 +21,35 @@ As of 2026-10-08, about 65 hours in (three weeks at 20 hours, plus a small Week 
 - Week 4: deadline calendar export (`ics.py`). Every upcoming deadline becomes
   an all-day event with a reminder two days before. CLI `calendar`, API
   `/api/calendar`, and an "Add to my calendar" button under the timeline
+- Week 4: PRIVACY.md; uvicorn access log off; proxy-aware rate limiting;
+  Permissions-Policy; Docker image (non-root, read-only filesystem), `docs/deploy.md`
+- Week 4: accessibility pass (Lighthouse 100, axe 0 violations, keyboard reach),
+  `docs/accessibility.md`; usability test script with 10 tasks
+- Week 5: Pattern Check engine (`disparity.py`): CSV/XLSX within limits, header
+  mapping with user correction, names dropped, IDs salted and hashed,
+  Appendix E metrics with small-cell suppression. Matches all three synthetic
+  logs exactly. `docs/metrics.md` has worked examples
+- Week 5: Pattern Check on the CLI (`pattern`), API (`/api/pattern/*`) and web
+  page (`/pattern`), and the one-page LSC brief with three questions
+- Week 6 (security part): one-page threat model (`docs/threat_model.md`), zip
+  bomb guard, pip-audit clean
+- HANDOFF.md: calendar each August, rule updates, deploy, CI, backlog
 - Gate 2 demo script (`docs/gate2_demo.md`) and front-end recommendation (DECISIONS.md)
 
 ## Next (in brief order)
 
-1. Gate 2 with Benjamin: run `docs/gate2_demo.md`, confirm React + Vite for v1.
-2. Replace the provisional CPS calendar with the official one.
-3. Re-verify every quote and subsection letter against ilga.gov and eCFR;
-   resolve the ISSRA response-time question.
-4. Week 4: FastAPI hardening (CORS lock, deploy), React front end, PDF
-   timeline export, accessibility pass, PRIVACY.md, alpha deployment.
-5. CPS layer from the current Student Code of Conduct.
-6. Week 5: Pattern Check (header mapping, metrics, suppression, LSC brief).
+These need people or access this build cannot supply.
+
+1. Gate 2 with Benjamin: run `docs/gate2_demo.md` (now including Pattern Check).
+2. Deploy the Docker image to a host with HTTPS and short platform logs; run the
+   checklist in `docs/deploy.md`; share the alpha URL privately.
+3. Replace the provisional CPS calendar with the official one.
+4. Legal review (Week 6): an attorney or advocate arranged by ChiEAC reads every
+   rule and letter; log changes in DECISIONS.md; flip `reviewed=True` rule by rule.
+5. Usability (Week 6): five sessions with `docs/usability_test_script.md`.
+6. Sanity-check Pattern Check against a public ISBE district aggregate.
+7. CPS rule layer from the current Student Code of Conduct.
+8. Backlog: React front end, Pattern Check charts, Spanish output, server-side PDF.
 
 ## Open questions for Benjamin
 
