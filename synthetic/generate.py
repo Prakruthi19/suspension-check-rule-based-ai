@@ -207,9 +207,10 @@ def expected_metrics(plan: LogPlan) -> dict:
                 if small
                 else round((incidents / total_incidents) / (g.enrolled / total_enrolled), 3)
             ),
+            # Only measurable when the log has the field (log B does not).
             "documented_intervention_share": (
                 round(round(long_oss * g.documented_interventions) / long_oss, 3)
-                if long_oss >= SUPPRESS_BELOW
+                if long_oss >= SUPPRESS_BELOW and "interventions_documented" in plan.headers
                 else None
             ),
             "subjective_share": round(subj / incidents, 3) if incidents >= SUPPRESS_BELOW else None,

@@ -166,3 +166,29 @@ The 2026-10-02 decision said the vanilla page stays as the v1 UI if Week 4 ran
 short. With Pattern Check due in Week 5, the React port is the item cut. The
 vanilla page scores 100 on Lighthouse accessibility and has no axe violations,
 so nothing a family sees is lost.
+
+## 2026-10-14 · Pattern Check in the standard library plus openpyxl, not pandas
+The brief suggests pandas. The metrics are counts and ratios over at most
+20,000 rows, so plain Python is enough, keeps the image smaller, and makes each
+metric easy to read against Appendix E. openpyxl reads XLSX in read-only,
+data-only mode: formulas are never evaluated, and a cell whose formula has no
+cached value is treated as unreadable.
+
+## 2026-10-15 · Only mapped columns are read; IDs are salted hashes
+Names and unmapped columns are dropped before any value is parsed. A student ID
+becomes an HMAC with a random salt per upload, used only for repeat counts.
+Error messages name columns and row numbers, never cell values. Labels not in
+the enrollment table with fewer than 10 rows are merged into "Other or
+unlisted", so a name typed into a race column cannot appear as a group.
+
+## 2026-10-16 · Bad rows: skip a few, refuse many
+If up to 5% of rows have an unreadable date, action, or day count they are
+skipped and the rows are listed in a warning. Above 5% the file is refused with
+a clear message, because a partial result from a mis-mapped file would look
+authoritative and be wrong.
+
+## 2026-10-16 · Fix the school B expected values
+`synthetic/expected/school_b.json` listed a documented-intervention share of
+0.4 for Black students, but log B has no interventions column, so the share
+cannot be measured. The generator now reports it only when the log has the
+field. The data files are unchanged.
