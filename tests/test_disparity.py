@@ -210,7 +210,7 @@ def test_without_student_ids_incidents_stand_in_and_repeat_is_unknown():
 
 def test_semicolon_csv_and_cp1252_and_us_dates():
     text = "Date;Action;Days;Race\n" + "10/01/2025;Out-of-school suspension;2;Hispanic\n" * 11
-    got = analyze(text.encode("cp1252") + "\n".encode(), "x.csv")
+    got = analyze(text.encode("cp1252") + b"\n", "x.csv")
     assert got["oss_incidents"] == 11
     assert "Hispanic" in got["by_race_ethnicity"]
 
