@@ -5,7 +5,8 @@
 .ruff_cache
 .coverage
 tests
-synthetic
+synthetic/expected
+synthetic/*.py
 docs
 examples
 tools

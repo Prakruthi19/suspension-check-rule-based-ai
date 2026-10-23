@@ -8,6 +8,7 @@ Run locally:  uvicorn app.api.main:app --reload   then open http://127.0.0.1:800
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 import time
@@ -23,10 +24,14 @@ from pydantic import ValidationError
 
 from suspension_check import __version__
 from suspension_check.calendar import SchoolCalendar
+from suspension_check.disparity import MAX_BYTES as PATTERN_MAX_BYTES
+from suspension_check.disparity import PatternError, analyze, propose_mapping, read_table
 from suspension_check.ics import to_ics
 from suspension_check.ingest import ingest
 from suspension_check.letters import TITLES, Variant, applicable, render_text
 from suspension_check.letters.formats import to_docx, to_html
+from suspension_check.lsc_brief import findings, questions
+from suspension_check.lsc_brief import to_html as brief_html
 from suspension_check.report import check
 from suspension_check.rules import evaluate
 from suspension_check.timeline import build_timeline
@@ -65,7 +70,7 @@ _hits: dict[str, deque[float]] = defaultdict(deque)
 
 
 def _body_limit(path: str) -> int:
-    return MAX_BODY_BYTES
+    return PATTERN_MAX_BYTES if path.startswith("/api/pattern") else MAX_BODY_BYTES
 
 
 def _client(request: Request) -> str:
@@ -136,6 +141,27 @@ def index() -> FileResponse:
     return FileResponse(WEB_DIR / "index.html", media_type="text/html")
 
 
+@app.get("/pattern")
+def pattern_page() -> FileResponse:
+    return FileResponse(WEB_DIR / "pattern.html", media_type="text/html")
+
+
+SAMPLE_DIR = Path(__file__).resolve().parent.parent.parent / "synthetic"
+SAMPLES = {
+    "school_a": "school_a.csv",
+    "school_b": "school_b.xlsx",
+    "school_c": "school_c_small.csv",
+}
+
+
+@app.get("/api/pattern/sample/{name}")
+def pattern_sample(name: str) -> FileResponse:
+    """The synthetic demo logs, so the page can be tried without real data."""
+    if name not in SAMPLES or not (SAMPLE_DIR / SAMPLES[name]).exists():
+        raise HTTPException(status_code=404)
+    return FileResponse(SAMPLE_DIR / SAMPLES[name], filename=SAMPLES[name])
+
+
 @app.get("/api/health")
 def health() -> dict[str, str]:
     return {"status": "ok", "version": __version__, "calendar": CALENDAR.name}
@@ -184,6 +210,79 @@ async def api_calendar(request: Request, as_of: date | None = None) -> Response:
         content=body,
         media_type="text/calendar; charset=utf-8",
         headers={"Content-Disposition": 'attachment; filename="suspension-deadlines.ics"'},
+    )
+
+
+def _json_param(value: str | None, name: str) -> dict | None:
+    if not value:
+        return None
+    try:
+        out = json.loads(value)
+    except ValueError:
+        raise HTTPException(status_code=422, detail={"invalid_fields": [name]}) from None
+    if not isinstance(out, dict):
+        raise HTTPException(status_code=422, detail={"invalid_fields": [name]})
+    return out
+
+
+def _pattern(raw: bytes, filename: str, enrollment: str | None, mapping: str | None) -> dict:
+    enr = _json_param(enrollment, "enrollment")
+    if enr is not None:
+        try:
+            enr = {
+                str(dim): {str(g): int(n) for g, n in groups.items() if int(n) > 0}
+                for dim, groups in enr.items()
+            }
+        except (AttributeError, TypeError, ValueError):
+            raise HTTPException(
+                status_code=422, detail={"invalid_fields": ["enrollment"]}
+            ) from None
+    try:
+        return analyze(raw, filename, enr, _json_param(mapping, "mapping"))
+    except PatternError as exc:
+        # PatternError messages name columns and row numbers, never cell values.
+        raise HTTPException(status_code=422, detail={"error": str(exc)}) from None
+
+
+@app.post("/api/pattern/map")
+async def api_pattern_map(request: Request, filename: str = "") -> dict:
+    """Step 1: the proposed column mapping, for the user to confirm. No cell values."""
+    try:
+        table = read_table(await request.body(), filename)
+    except PatternError as exc:
+        raise HTTPException(status_code=422, detail={"error": str(exc)}) from None
+    return {
+        "headers": table.headers,
+        "mapping": propose_mapping(table.headers),
+        "rows": len(table.rows),
+    }
+
+
+@app.post("/api/pattern")
+async def api_pattern(
+    request: Request, filename: str = "", enrollment: str | None = None, mapping: str | None = None
+) -> dict:
+    """Step 2: metrics with suppression, findings, and the three questions."""
+    result = _pattern(await request.body(), filename, enrollment, mapping)
+    result["findings"] = [f.headline for f in findings(result)]
+    result["questions"] = questions(result)
+    return result
+
+
+@app.post("/api/pattern/brief")
+async def api_pattern_brief(
+    request: Request,
+    filename: str = "",
+    enrollment: str | None = None,
+    mapping: str | None = None,
+    title: str = "",
+) -> Response:
+    """The one-page LSC brief as a printable HTML page."""
+    result = _pattern(await request.body(), filename, enrollment, mapping)
+    return Response(
+        content=brief_html(result, title),
+        media_type="text/html; charset=utf-8",
+        headers={"Content-Disposition": 'attachment; filename="lsc-brief.html"'},
     )
 
 

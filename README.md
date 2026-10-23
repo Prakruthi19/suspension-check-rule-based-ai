@@ -30,15 +30,16 @@ in the decision path.
 | Facts models, rule registry, three-valued evaluation | Done |
 | School calendar (weekends, closures, JSON and .ics import) | Done. Bundled CPS 2026-27 calendar is **provisional** |
 | Timeline state machine (main track + IDEA track) | Done |
-| CLI: `check`, `letter`, `calendar`, `redact`, `rules` | Done |
+| CLI: `check`, `letter`, `calendar`, `pattern`, `redact`, `rules` | Done |
 | Deadline calendar export (.ics, reminder two days before each date) | Done: CLI, API, and web button |
-| Tests: rule fixtures, property tests, letter goldens, adversarial redaction, no-persistence check | Done: 316 tests, 97% coverage |
+| Tests: rule fixtures, property tests, letter goldens, adversarial redaction, no-persistence check | Done: 365 tests, 96% coverage |
 | Synthetic discipline logs with expected metrics | Done, `synthetic/` |
 | Redaction on ingest (Presidio + custom recognizers) for the incident description | Done; 22 adversarial fixtures |
 | Four letters (review, MDR, records, expulsion) as text, printable HTML, and DOCX | Done; goldens for every scenario |
-| Family Check web page + stateless API | Working spike (vanilla HTML, not yet deployed); React port planned for Week 4 |
+| Family Check web page + stateless API | Working (vanilla HTML, Docker image ready, not yet deployed to a public URL); React port moved to the backlog |
 | CPS rule layer | Not started (needs current Code of Conduct) |
-| Pattern Check metrics and upload | Not started (Week 5) |
+| Pattern Check: upload, header mapping, metrics with small-cell suppression, LSC brief | Done: matches all three synthetic logs exactly; web page at `/pattern` |
+| Privacy notice, hardening, accessibility pass, Docker image | Done: PRIVACY.md, Lighthouse 100, `Dockerfile` |
 
 See [docs/STATUS.md](docs/STATUS.md) for what is next and the open questions.
 
@@ -55,6 +56,7 @@ uv run suspension-check rules                # list every rule and its review st
 uv run suspension-check check examples/scenario_b_iep_cumulative_twelve.json --today 2026-09-27
 uv run suspension-check letter examples/scenario_b_iep_cumulative_twelve.json --variant mdr_request
 uv run suspension-check calendar examples/scenario_b_iep_cumulative_twelve.json --today 2026-09-27 > deadlines.ics
+uv run suspension-check pattern synthetic/school_a.csv   # Pattern Check on a synthetic log
 uv run suspension-check redact "Call Marcus Johnson at (773) 555-0142"
 ```
 

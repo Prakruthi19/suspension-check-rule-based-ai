@@ -122,3 +122,33 @@ def test_calendar_rejects_bad_facts(tmp_path, capsys):
     bad.write_text("{}", encoding="utf-8")
     assert main(["calendar", str(bad)]) == 2
     assert "Invalid facts file" in capsys.readouterr().err
+
+
+SYN = EXAMPLES.parent / "synthetic"
+
+
+def test_pattern_command_table_and_questions(tmp_path, capsys):
+    enr = tmp_path / "enr.json"
+    enr.write_text(
+        json.dumps(
+            {"Black": 240, "Hispanic": 200, "White": 120, "Asian": 30, "Two or More Races": 10}
+        )
+    )
+    assert main(["pattern", str(SYN / "school_a.csv"), "--enrollment", str(enr)]) == 0
+    out = capsys.readouterr().out
+    assert "Student Name                 -> dropped (name)" in out
+    assert "2.728" in out and "Questions for the principal" in out
+    assert "Smith" not in out
+
+
+def test_pattern_command_json_brief_and_errors(tmp_path, capsys):
+    log = str(SYN / "school_c_small.csv")
+    assert main(["pattern", log, "--json"]) == 0
+    assert json.loads(capsys.readouterr().out)["oss_incidents"] == 14
+    assert main(["pattern", log, "--brief", "--title", "Test"]) == 0
+    assert capsys.readouterr().out.startswith("<!doctype html>")
+    bad = tmp_path / "bad.csv"
+    bad.write_text("Item,Price\napple,1\n")
+    assert main(["pattern", str(bad)]) == 2
+    assert "needs a column" in capsys.readouterr().err
+    assert main(["pattern", str(bad), "--map", "Item=incident_date", "--map", "Price="]) == 2

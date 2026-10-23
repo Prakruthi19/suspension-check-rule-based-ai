@@ -202,3 +202,80 @@ def test_permissions_policy_header():
 def test_uvicorn_access_log_is_off():
     # The access log would record client addresses; PRIVACY.md promises it does not.
     assert logging.getLogger("uvicorn.access").disabled
+
+
+SYN = EXAMPLES.parent / "synthetic"
+_OCTET = {"content-type": "application/octet-stream"}
+
+
+def test_pattern_map_then_analyze_then_brief():
+    main._hits.clear()
+    raw = (SYN / "school_b.xlsx").read_bytes()
+    m = client.post("/api/pattern/map?filename=school_b.xlsx", content=raw, headers=_OCTET)
+    assert m.status_code == 200
+    body = m.json()
+    assert body["mapping"]["Name (Last, First)"] == "name"
+    assert body["rows"] == 145
+    assert set(body) == {"headers", "mapping", "rows"}  # no cell values come back
+    enr = json.dumps({"race_ethnicity": {"Black": 400, "Hispanic": 500, "White": 300, "Asian": 60}})
+    r = client.post(
+        "/api/pattern",
+        params={
+            "filename": "school_b.xlsx",
+            "enrollment": enr,
+            "mapping": json.dumps(body["mapping"]),
+        },
+        content=raw,
+        headers=_OCTET,
+    )
+    assert r.status_code == 200
+    got = r.json()
+    assert got["by_race_ethnicity"]["Black"]["risk_ratio"] == 3.212
+    assert len(got["questions"]) == 3
+    b = client.post(
+        "/api/pattern/brief",
+        params={"filename": "school_b.xlsx", "enrollment": enr, "title": "Test High"},
+        content=raw,
+        headers=_OCTET,
+    )
+    assert b.status_code == 200 and "Test High" in b.text
+    main._hits.clear()
+
+
+def test_pattern_errors_are_422_with_safe_messages():
+    main._hits.clear()
+    bad = b"Item,Price\nJamal Carter,1\n"
+    for path in ("/api/pattern", "/api/pattern/brief"):
+        r = client.post(path + "?filename=x.csv", content=bad, headers=_OCTET)
+        assert r.status_code == 422 and "Jamal" not in r.text
+    assert client.post("/api/pattern/map", content=b"", headers=_OCTET).status_code in (413, 422)
+    raw = (SYN / "school_c_small.csv").read_bytes()
+    for params in (
+        {"enrollment": "not json"},
+        {"enrollment": "[1]"},
+        {"enrollment": json.dumps({"race_ethnicity": {"Black": "many"}})},
+        {"mapping": "{"},
+    ):
+        r = client.post("/api/pattern", params=params, content=raw, headers=_OCTET)
+        assert r.status_code == 422
+    main._hits.clear()
+
+
+def test_pattern_upload_limit_is_larger_but_bounded():
+    main._hits.clear()
+    from suspension_check import disparity
+
+    big = b"a" * (main.MAX_BODY_BYTES + 10)
+    r = client.post("/api/pattern/map?filename=x.csv", content=big, headers=_OCTET)
+    assert r.status_code != 413  # a 40 KB log is fine for Pattern Check ...
+    too_big = b"a" * (disparity.MAX_BYTES + 1)
+    r = client.post("/api/pattern/map", content=too_big, headers=_OCTET)
+    assert r.status_code == 413  # ... but not above 2 MB
+    main._hits.clear()
+
+
+def test_pattern_page_and_samples():
+    assert client.get("/pattern").status_code == 200
+    assert client.get("/api/pattern/sample/school_a").status_code == 200
+    assert client.get("/api/pattern/sample/../../etc").status_code == 404
+    assert client.get("/api/pattern/sample/nope").status_code == 404
