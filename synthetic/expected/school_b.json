@@ -11,7 +11,7 @@
       "students_suspended_per_100": 15.0,
       "days_lost_per_100": 75.0,
       "composition_index": 1.776,
-      "documented_intervention_share": 0.4,
+      "documented_intervention_share": null,
       "subjective_share": 0.6,
       "repeat_share": 0.25,
       "risk_ratio": 3.212,
