@@ -13,11 +13,11 @@ from .conftest import EXAMPLES, load_json
 client = TestClient(app)
 
 
-def _post(body, **kw):
+def _post(body, headers=None, **kw):
     return client.post(
         "/api/check?as_of=2026-09-27",
         content=json.dumps(body),
-        headers={"content-type": "application/json"},
+        headers={"content-type": "application/json", **(headers or {})},
         **kw,
     )
 
@@ -166,3 +166,39 @@ def test_calendar_rejects_invalid_facts():
     main._hits.clear()
     r = client.post("/api/calendar", content="{}", headers={"content-type": "application/json"})
     assert r.status_code == 422
+
+
+def test_malformed_content_length_is_rejected_not_a_crash():
+    from starlette.testclient import TestClient as TC
+
+    raw = TC(app, raise_server_exceptions=False)
+    r = raw.post(
+        "/api/check",
+        content=b"{}",
+        headers={"content-type": "application/json", "content-length": "abc"},
+    )
+    assert r.status_code in (400, 413)
+
+
+def test_rate_limit_uses_forwarded_client_only_when_trusted(monkeypatch):
+    monkeypatch.setattr(main, "RATE_LIMIT", 1)
+    body = load_json(EXAMPLES / "scenario_a_two_day_no_notice.json")
+    main._hits.clear()
+    monkeypatch.setattr(main, "TRUST_PROXY", True)
+    assert _post(body, headers={"x-forwarded-for": "203.0.113.1"}).status_code == 200
+    assert _post(body, headers={"x-forwarded-for": "203.0.113.2, 10.0.0.1"}).status_code == 200
+    assert _post(body, headers={"x-forwarded-for": "203.0.113.1"}).status_code == 429
+    main._hits.clear()
+    monkeypatch.setattr(main, "TRUST_PROXY", False)
+    assert _post(body, headers={"x-forwarded-for": "203.0.113.9"}).status_code == 200
+    assert _post(body, headers={"x-forwarded-for": "203.0.113.8"}).status_code == 429
+    main._hits.clear()
+
+
+def test_permissions_policy_header():
+    assert "camera=()" in client.get("/api/health").headers["permissions-policy"]
+
+
+def test_uvicorn_access_log_is_off():
+    # The access log would record client addresses; PRIVACY.md promises it does not.
+    assert logging.getLogger("uvicorn.access").disabled

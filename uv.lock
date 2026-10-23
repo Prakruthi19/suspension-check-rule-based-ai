@@ -2259,9 +2259,13 @@ dependencies = [
 api = [
     { name = "en-core-web-sm" },
     { name = "fastapi" },
+    { name = "openpyxl" },
     { name = "presidio-analyzer" },
     { name = "presidio-anonymizer" },
     { name = "uvicorn" },
+]
+pattern = [
+    { name = "openpyxl" },
 ]
 redact = [
     { name = "en-core-web-sm" },
@@ -2287,15 +2291,16 @@ requires-dist = [
     { name = "en-core-web-sm", marker = "extra == 'redact'", url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" },
     { name = "fastapi", marker = "extra == 'api'", specifier = ">=0.110" },
     { name = "jinja2", specifier = ">=3.1" },
+    { name = "openpyxl", marker = "extra == 'pattern'", specifier = ">=3.1" },
     { name = "presidio-analyzer", marker = "extra == 'redact'", specifier = ">=2.2.354" },
     { name = "presidio-anonymizer", marker = "extra == 'redact'", specifier = ">=2.2.354" },
     { name = "pydantic", specifier = ">=2.6" },
     { name = "python-dateutil", specifier = ">=2.9" },
     { name = "python-docx", specifier = ">=1.1" },
-    { name = "suspension-check-rule-based-ai", extras = ["redact"], marker = "extra == 'api'" },
+    { name = "suspension-check-rule-based-ai", extras = ["redact", "pattern"], marker = "extra == 'api'" },
     { name = "uvicorn", marker = "extra == 'api'", specifier = ">=0.29" },
 ]
-provides-extras = ["redact", "api"]
+provides-extras = ["redact", "api", "pattern"]
 
 [package.metadata.requires-dev]
 dev = [
