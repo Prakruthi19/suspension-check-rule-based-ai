@@ -38,10 +38,15 @@ RATE_LIMIT = int(
 ALLOWED_ORIGINS = [
     o for o in os.environ.get("SUSPENSION_CHECK_ALLOWED_ORIGINS", "").split(",") if o
 ]
+TRUST_PROXY = os.environ.get("SUSPENSION_CHECK_TRUST_PROXY") == "1"
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
 
 log = logging.getLogger("suspension_check.api")
 logging.basicConfig(level=logging.INFO, format="%(message)s")
+# Uvicorn's access log prints the client address and full URL of every request.
+# This service logs only what ``guard`` writes, so the access log is switched off
+# here, whatever command line starts the server.
+logging.getLogger("uvicorn.access").disabled = True
 
 app = FastAPI(title="Suspension Check API", version=__version__, docs_url=None, redoc_url=None)
 if ALLOWED_ORIGINS:
@@ -57,6 +62,21 @@ CALENDAR = SchoolCalendar.default()
 # In-memory sliding window. Client addresses live here for at most 60 seconds
 # and are never written to logs.
 _hits: dict[str, deque[float]] = defaultdict(deque)
+
+
+def _body_limit(path: str) -> int:
+    return MAX_BODY_BYTES
+
+
+def _client(request: Request) -> str:
+    """The address used for rate limiting only. Behind a reverse proxy (Render,
+    Fly, nginx), set SUSPENSION_CHECK_TRUST_PROXY=1 so the first X-Forwarded-For
+    hop is used; otherwise every visitor would share the proxy's address."""
+    if TRUST_PROXY:
+        fwd = request.headers.get("x-forwarded-for", "")
+        if fwd.strip():
+            return fwd.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
 
 
 def _rate_limited(client: str) -> bool:
@@ -77,6 +97,7 @@ SECURITY_HEADERS = {
     "Referrer-Policy": "no-referrer",
     "X-Frame-Options": "DENY",
     "Cache-Control": "no-store",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=(), interest-cohort=()",
 }
 
 
@@ -85,10 +106,10 @@ async def guard(request: Request, call_next):
     rid = uuid.uuid4().hex[:12]
     started = time.perf_counter()
     if request.method == "POST":
-        length = request.headers.get("content-length")
-        if length is None or int(length) > MAX_BODY_BYTES:
+        length = request.headers.get("content-length", "")
+        if not length.isdigit() or int(length) > _body_limit(request.url.path):
             return JSONResponse({"error": "Request body missing or too large."}, status_code=413)
-        client = request.client.host if request.client else "unknown"
+        client = _client(request)
         if _rate_limited(client):
             return JSONResponse(
                 {"error": "Too many requests. Try again in a minute."}, status_code=429

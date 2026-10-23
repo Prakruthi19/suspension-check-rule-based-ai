@@ -29,8 +29,10 @@ redact = [
 api = [
     "fastapi>=0.110",
     "uvicorn>=0.29",
-    "suspension-check-rule-based-ai[redact]",
+    "suspension-check-rule-based-ai[redact,pattern]",
 ]
+# Pattern Check: XLSX discipline logs (read-only mode, no macros).
+pattern = ["openpyxl>=3.1"]
 
 [project.scripts]
 suspension-check = "suspension_check.cli:main"

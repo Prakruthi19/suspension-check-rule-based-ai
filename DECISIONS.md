@@ -142,3 +142,27 @@ safe to sync to a phone or a shared family calendar. Output is deterministic
 goldens like the letters. Hand-written (about 90 lines) rather than adding a
 dependency; the tests check RFC 5545 line folding, and a standard parser
 accepts the output.
+
+## 2026-10-09 · Uvicorn's access log is switched off in code
+Uvicorn's default access log prints the client address and full URL of every
+request, which breaks the "no addresses in logs" promise. It is now disabled
+when the app is imported, so it stays off however the server is started, and
+a test checks it. PRIVACY.md describes exactly what remains: one allowlist line.
+
+## 2026-10-12 · Rate limiting behind a proxy
+Behind a hosting proxy every request appears to come from the proxy, so one
+busy visitor could lock everyone out. `SUSPENSION_CHECK_TRUST_PROXY=1` (on in the
+Docker image) counts by the first `X-Forwarded-For` address instead. Off by
+default for direct runs, where that header could be forged. A malformed
+`Content-Length` now gets a 413 instead of a server error.
+
+## 2026-10-12 · One Docker image, read-only, non-root
+Deployment is a single image: uv-installed, no dev dependencies, the spaCy
+model baked in, running as an unprivileged user. It works with a read-only root
+filesystem, which is a cheap way to prove "no storage" on any host.
+
+## 2026-10-13 · Keep the vanilla page for v1; React port moves to the backlog
+The 2026-10-02 decision said the vanilla page stays as the v1 UI if Week 4 ran
+short. With Pattern Check due in Week 5, the React port is the item cut. The
+vanilla page scores 100 on Lighthouse accessibility and has no axe violations,
+so nothing a family sees is lost.
